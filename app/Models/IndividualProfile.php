@@ -77,6 +77,15 @@ class IndividualProfile extends Model
     }
 
     /**
+     * Organizations this individual is associated with through role assignments.
+     */
+    public function organizations()
+    {
+        return $this->belongsToMany(Organization::class, 'role_assignments', 'individual_profile_id', 'organization_id')
+            ->withTimestamps();
+    }
+
+    /**
      * Care notes for this individual.
      */
     public function careNotes()

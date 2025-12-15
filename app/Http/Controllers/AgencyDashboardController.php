@@ -67,8 +67,8 @@ class AgencyDashboardController extends Controller
         })->where('type', 'program')->get();
 
         // Get all individuals across the agency
-        $totalIndividuals = IndividualProfile::whereHas('organization', function ($query) use ($organizations) {
-            $query->whereIn('id', $organizations->pluck('id'));
+        $totalIndividuals = IndividualProfile::whereHas('organizations', function ($query) use ($organizations) {
+            $query->whereIn('organizations.id', $organizations->pluck('id'));
         })->count();
 
         // Calculate active staff (has logged activity in last 30 days)
@@ -198,7 +198,9 @@ class AgencyDashboardController extends Controller
 
         // Get utilization data for each program
         $utilizationData = $programs->map(function ($program) {
-            $participants = IndividualProfile::where('organization_id', $program->id)->count();
+            $participants = IndividualProfile::whereHas('organizations', function ($query) use ($program) {
+                $query->where('organizations.id', $program->id);
+            })->count();
 
             return [
                 'program' => $program,
