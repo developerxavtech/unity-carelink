@@ -31,10 +31,9 @@ class DspDashboardController extends Controller
 
         $user = Auth::user();
 
-        return IndividualProfile::whereHas('roleAssignments', function ($query) use ($user) {
-            $query->where('user_id', $user->id)
-                  ->whereIn('role_type', ['dsp', 'program_staff']);
-        })->with(['careNotes', 'moodChecks'])->get();
+        return IndividualProfile::accessibleBy($user->id)
+            ->with(['careNotes', 'moodChecks'])
+            ->get();
     }
 
     /**
@@ -213,6 +212,28 @@ class DspDashboardController extends Controller
             'weekEnd' => $weekEnd,
             'totalHours' => 0,
             'message' => 'Time tracking functionality coming soon!',
+        ]);
+    }
+
+    /**
+     * Calendar - Personal calendar for DSP
+     */
+    public function calendar(Request $request)
+    {
+        $this->checkDspRole();
+
+        $individuals = $this->getAssignedIndividuals();
+
+        // Get upcoming events for the authenticated user
+        $events = Auth::user()->calendarEvents()
+            ->upcoming()
+            ->limit(10)
+            ->get();
+
+        return view('dsp.calendar', [
+            'individuals' => $individuals,
+            'events' => $events,
+            'currentMonth' => now(),
         ]);
     }
 }

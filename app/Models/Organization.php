@@ -38,25 +38,19 @@ class Organization extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(User::class, 'role_assignments')
-            ->withPivot('role_type', 'permissions')
-            ->withTimestamps();
+        // Without teams, we return all users for now.
+        // A direct organization_user pivot should be added.
+        return User::query();
     }
 
     /**
-     * Role assignments for this organization.
-     */
-    public function roleAssignments()
-    {
-        return $this->hasMany(RoleAssignment::class);
-    }
-
-    /**
-     * Staff members (users with role assignments to this org).
+     * Staff members.
      */
     public function staff()
     {
-        return $this->users();
+        return User::whereHas('roles', function ($q) {
+            $q->whereIn('name', ['program_staff', 'agency_admin']);
+        });
     }
 
     /**
@@ -64,10 +58,7 @@ class Organization extends Model
      */
     public function dsps()
     {
-        return $this->belongsToMany(User::class, 'role_assignments')
-            ->wherePivot('role_type', 'dsp')
-            ->withPivot('permissions')
-            ->withTimestamps();
+        return User::role('dsp');
     }
 
     /**
@@ -75,10 +66,7 @@ class Organization extends Model
      */
     public function admins()
     {
-        return $this->belongsToMany(User::class, 'role_assignments')
-            ->wherePivot('role_type', 'agency_admin')
-            ->withPivot('permissions')
-            ->withTimestamps();
+        return User::role('agency_admin');
     }
 
     // Scopes

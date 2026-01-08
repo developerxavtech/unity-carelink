@@ -9,6 +9,9 @@ use App\Http\Controllers\AgencyDashboardController;
 use App\Http\Controllers\IndividualProfileController;
 use App\Http\Controllers\CareNoteController;
 use App\Http\Controllers\MoodCheckController;
+use App\Http\Controllers\UserStatusController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\CalendarEventController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -30,7 +33,23 @@ Route::middleware(['auth', 'verified'])->prefix('family')->name('family.')->grou
     Route::get('/messages', [FamilyDashboardController::class, 'messages'])->name('messages');
     Route::get('/messages/{conversation}', [FamilyDashboardController::class, 'conversation'])->name('messages.show');
     Route::get('/resources', [FamilyDashboardController::class, 'resources'])->name('resources');
+
+    // Status Routes
+    Route::get('/status/edit', [UserStatusController::class, 'edit'])->name('status.edit');
+    Route::post('/status/update', [UserStatusController::class, 'update'])->name('status.update');
+    Route::post('/status/clear', [UserStatusController::class, 'clear'])->name('status.clear');
 });
+
+// Chat Routes
+Route::middleware(['auth', 'verified'])->prefix('chat')->name('chat.')->group(function () {
+    Route::get('/', [ChatController::class, 'index'])->name('index');
+    Route::get('/create', [ChatController::class, 'create'])->name('create');
+    Route::post('/', [ChatController::class, 'store'])->name('store');
+    Route::get('/{conversation}', [ChatController::class, 'show'])->name('show');
+    Route::post('/{conversation}/messages', [ChatController::class, 'sendMessage'])->name('messages.send');
+    Route::post('/{conversation}/participants', [ChatController::class, 'addParticipant'])->name('participants.add');
+});
+
 
 // DSP Dashboard Routes
 Route::middleware(['auth', 'verified'])->prefix('dsp')->name('dsp.')->group(function () {
@@ -43,6 +62,7 @@ Route::middleware(['auth', 'verified'])->prefix('dsp')->name('dsp.')->group(func
     Route::get('/messages', [DspDashboardController::class, 'messages'])->name('messages');
     Route::get('/messages/{conversation}', [DspDashboardController::class, 'conversation'])->name('messages.show');
     Route::get('/time-tracking', [DspDashboardController::class, 'timeTracking'])->name('time-tracking');
+    Route::get('/calendar', [DspDashboardController::class, 'calendar'])->name('calendar');
 });
 
 // Program Dashboard Routes
@@ -66,6 +86,7 @@ Route::middleware(['auth', 'verified'])->prefix('agency')->name('agency.')->grou
     Route::get('/team-communication', [AgencyDashboardController::class, 'teamCommunication'])->name('team-communication');
     Route::get('/team-communication/{conversation}', [AgencyDashboardController::class, 'conversation'])->name('team-communication.show');
     Route::get('/billing-payroll', [AgencyDashboardController::class, 'billingPayroll'])->name('billing-payroll');
+    Route::get('/calendar', [AgencyDashboardController::class, 'calendar'])->name('calendar');
 });
 
 Route::middleware('auth')->group(function () {
@@ -81,6 +102,9 @@ Route::middleware('auth')->group(function () {
 
     // Mood Checks (CarePulse)
     Route::post('individuals/{individual}/mood-checks', [MoodCheckController::class, 'store'])->name('mood-checks.store');
+
+    // Calendar Events (API endpoints for all authenticated users)
+    Route::resource('calendar-events', CalendarEventController::class)->except(['create', 'edit']);
 });
 
 require __DIR__ . '/auth.php';

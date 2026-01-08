@@ -22,15 +22,15 @@
                         <form method="GET" class="row g-3">
                             <div class="col-md-3">
                                 <label class="form-label small text-muted">Search Staff</label>
-                                <input type="text" name="search" class="form-control"
-                                       placeholder="Name or email..."
-                                       value="{{ $filters['search'] ?? '' }}">
+                                <input type="text" name="search" class="form-control" placeholder="Name or email..."
+                                    value="{{ $filters['search'] ?? '' }}">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label small text-muted">Role</label>
                                 <select name="role" class="form-select">
                                     <option value="">All Roles</option>
-                                    <option value="dsp" {{ ($filters['role'] ?? '') === 'dsp' ? 'selected' : '' }}>DSP</option>
+                                    <option value="dsp" {{ ($filters['role'] ?? '') === 'dsp' ? 'selected' : '' }}>DSP
+                                    </option>
                                     <option value="program_staff" {{ ($filters['role'] ?? '') === 'program_staff' ? 'selected' : '' }}>Program Staff</option>
                                     <option value="family_admin" {{ ($filters['role'] ?? '') === 'family_admin' ? 'selected' : '' }}>Family Admin</option>
                                     <option value="agency_admin" {{ ($filters['role'] ?? '') === 'agency_admin' ? 'selected' : '' }}>Agency Admin</option>
@@ -95,19 +95,17 @@
                                             </td>
                                             <td>{{ $member->email }}</td>
                                             <td>
-                                                @foreach($member->roleAssignments->unique('role_type') as $assignment)
+                                                @foreach($member->roles as $role)
                                                     <span class="badge bg-info me-1">
-                                                        {{ ucwords(str_replace('_', ' ', $assignment->role_type)) }}
+                                                        {{ ucwords(str_replace('_', ' ', $role->name)) }}
                                                     </span>
                                                 @endforeach
                                             </td>
                                             <td>
-                                                @foreach($member->roleAssignments->unique('organization_id') as $assignment)
-                                                    @if($assignment->organization)
-                                                        <span class="badge bg-light text-dark me-1">
-                                                            {{ $assignment->organization->name }}
-                                                        </span>
-                                                    @endif
+                                                @foreach($member->organizations as $org)
+                                                    <span class="badge bg-light text-dark me-1">
+                                                        {{ $org->name }}
+                                                    </span>
                                                 @endforeach
                                             </td>
                                             <td>

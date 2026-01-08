@@ -35,7 +35,7 @@ class DashboardController extends Controller
             return $this->superAdminDashboard();
         }
 
-        // Default to family admin dashboard
+
         return $this->familyAdminDashboard();
     }
 
@@ -47,7 +47,9 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         $data = [
-            'individualProfiles' => $user->individualProfiles()->with('careNotes', 'moodChecks')->get(),
+            'individualProfiles' => \App\Models\IndividualProfile::accessibleBy($user->id)
+                ->with('careNotes', 'moodChecks')
+                ->get(),
             'unreadMessages' => 0, // TODO: Implement when messaging is ready
             'upcomingEvents' => 0, // TODO: Implement when calendar is ready
             'pendingItems' => 0,
@@ -80,12 +82,8 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Get user's organization through role assignment
-        $organization = $user->roleAssignments()
-            ->where('role_type', 'agency_admin')
-            ->with('organization')
-            ->first()
-            ?->organization;
+        // Get user's first organization through Spatie Teams
+        $organization = $user->organizations()->first();
 
         $data = [
             'organization' => $organization,

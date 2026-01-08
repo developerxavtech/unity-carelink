@@ -135,12 +135,23 @@
                             <i class="bi bi-heart-pulse"></i>
                             CarePulse Check-In
                         </h6>
-                        <div class="alert alert-light border text-center">
-                            <p class="mb-2">How is everyone doing today?</p>
-                            <small class="text-muted">Check-in feature coming soon</small>
+                        <div
+                            class="alert {{ Auth::user()->isBusy() ? 'alert-warning' : 'alert-light' }} border d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="fs-4">{{ Auth::user()->status_emoji ?? '📍' }}</span>
+                                <span class="ms-2 fw-bold">{{ Auth::user()->activity_status ?? 'Available' }}</span>
+                                @if(Auth::user()->status_busy_until && Auth::user()->isBusy())
+                                    <div class="text-muted small ms-5">
+                                        Until {{ Auth::user()->status_busy_until->format('g:i A') }}
+                                    </div>
+                                @endif
+                            </div>
+                            <a href="{{ route('family.status.edit') }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
                         </div>
                     </div>
-                </div>
+                </div>dashboard
             </div>
 
             <!-- Support Resources -->
@@ -192,7 +203,8 @@
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <h6 class="mb-1">{{ $individual->first_name }} {{ $individual->last_name }}</h6>
+                                                    <h6 class="mb-1">{{ $individual->first_name }} {{ $individual->last_name }}
+                                                    </h6>
                                                     <small class="text-muted">{{ $individual->age }} years old</small>
                                                 </div>
                                                 <span class="badge bg-success">Active</span>
@@ -200,7 +212,8 @@
                                             <p class="mt-2 mb-3 small text-muted">
                                                 {{ Str::limit($individual->strengths_abilities ?? 'Profile information available', 80) }}
                                             </p>
-                                            <a href="{{ route('individuals.show', $individual) }}" class="btn btn-sm btn-primary">
+                                            <a href="{{ route('individuals.show', $individual) }}"
+                                                class="btn btn-sm btn-primary">
                                                 <i class="bi bi-eye"></i> View Profile
                                             </a>
                                         </div>

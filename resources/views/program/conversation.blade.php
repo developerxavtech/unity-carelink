@@ -28,9 +28,10 @@
                         @forelse($messages as $message)
                             <div class="mb-3 {{ $message->user_id === Auth::id() ? 'text-end' : '' }}">
                                 <div class="d-inline-block" style="max-width: 70%;">
-                                    <div class="p-3 rounded {{ $message->user_id === Auth::id() ? 'bg-primary text-white' : 'bg-light' }}">
+                                    <div
+                                        class="p-3 rounded {{ $message->user_id === Auth::id() ? 'bg-primary text-white' : 'bg-light' }}">
                                         <div class="d-flex align-items-start gap-2 mb-2">
-                                            @if($message->user_id !== Auth::id())
+                                            @if ($message->user_id !== Auth::id())
                                                 <div class="bg-secondary bg-opacity-25 rounded-circle p-2">
                                                     <i class="bi bi-person-circle"></i>
                                                 </div>
@@ -58,11 +59,8 @@
                     <div class="card-footer bg-white border-top">
                         <form method="POST" action="#" class="d-flex gap-2" disabled>
                             @csrf
-                            <input type="text"
-                                   class="form-control"
-                                   placeholder="Type your message..."
-                                   name="content"
-                                   disabled>
+                            <input type="text" class="form-control" placeholder="Type your message..." name="content"
+                                disabled>
                             <button type="submit" class="btn btn-primary" disabled>
                                 <i class="bi bi-send"></i> Send
                             </button>

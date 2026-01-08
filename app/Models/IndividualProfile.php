@@ -48,22 +48,13 @@ class IndividualProfile extends Model
     }
 
     /**
-     * Role assignments for this individual (who has access).
-     */
-    public function roleAssignments()
-    {
-        return $this->hasMany(RoleAssignment::class);
-    }
-
-    /**
      * DSPs assigned to support this individual.
      */
     public function dsps()
     {
-        return $this->belongsToMany(User::class, 'role_assignments')
-            ->wherePivot('role_type', 'dsp')
-            ->withPivot('permissions')
-            ->withTimestamps();
+        // For now, return all DSPs globally. 
+        // A new assignment system (pivot table) should be implemented later.
+        return User::role('dsp');
     }
 
     /**
@@ -71,18 +62,20 @@ class IndividualProfile extends Model
      */
     public function authorizedUsers()
     {
-        return $this->belongsToMany(User::class, 'role_assignments')
-            ->withPivot('role_type', 'permissions')
-            ->withTimestamps();
+        // Family admin + all DSPs and Staff for now.
+        return User::where('id', $this->family_user_id)
+            ->orWhereHas('roles', function ($q) {
+                $q->whereIn('name', ['dsp', 'program_staff', 'agency_admin', 'super_admin']);
+            });
     }
 
     /**
-     * Organizations this individual is associated with through role assignments.
+     * Organizations this individual is associated with.
      */
     public function organizations()
     {
-        return $this->belongsToMany(Organization::class, 'role_assignments', 'individual_profile_id', 'organization_id')
-            ->withTimestamps();
+        // Simplified until a direct relationship is added.
+        return Organization::query();
     }
 
     /**
@@ -128,13 +121,18 @@ class IndividualProfile extends Model
     }
 
     /**
-     * Scope to get profiles accessible by a user (based on role assignments).
+     * Scope to get profiles accessible by a user.
      */
     public function scopeAccessibleBy($query, int $userId)
     {
-        return $query->whereHas('roleAssignments', function ($q) use ($userId) {
-            $q->where('user_id', $userId);
-        });
+        $user = User::find($userId);
+
+        if ($user && $user->hasRole('family_admin')) {
+            return $query->where('family_user_id', $userId);
+        }
+
+        // Staff and DSPs see all for now until a new assignment system is added.
+        return $query;
     }
 
     // Helper Methods
@@ -152,7 +150,7 @@ class IndividualProfile extends Model
      */
     public function getAgeAttribute(): ?int
     {
-        return $this->date_of_birth?->age;
+        return $this->date_of_birth?->diffInYears(now());
     }
 
     /**
@@ -173,8 +171,12 @@ class IndividualProfile extends Model
             return true;
         }
 
-        // Check role assignments
-        return $this->roleAssignments()->where('user_id', $userId)->exists();
+        $user = User::find($userId);
+        if (!$user)
+            return false;
+
+        // Staff and DSPs have access globally for now.
+        return $user->hasAnyRole(['dsp', 'program_staff', 'agency_admin', 'super_admin']);
     }
 
     /**

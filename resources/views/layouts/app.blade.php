@@ -31,7 +31,7 @@
 
                     <!-- Navigation Links -->
                     <ul class="nav flex-column">
-                        @if(auth()->user()->hasRole('family_admin'))
+                        @if (auth()->user()->hasRole('family_admin'))
                             <li class="nav-item">
                                 <hr class="text-black-50 mx-3">
                                 <small class="text-black-50 px-3">FAMILY DASHBOARD</small>
@@ -158,8 +158,8 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('dsp.messages*') ? 'active' : '' }}"
-                                    href="{{ route('dsp.messages') }}">
+                                <a class="nav-link {{ request()->routeIs('chat.*') ? 'active' : '' }}"
+                                    href="{{ route('chat.index') }}">
                                     <i class="bi bi-chat-dots"></i>
                                     Messages
                                 </a>
@@ -169,6 +169,13 @@
                                     href="{{ route('dsp.time-tracking') }}">
                                     <i class="bi bi-clock-history"></i>
                                     Time Tracking
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('dsp.calendar') ? 'active' : '' }}"
+                                    href="{{ route('dsp.calendar') }}">
+                                    <i class="bi bi-calendar3"></i>
+                                    My Calendar
                                 </a>
                             </li>
                         @elseif(auth()->user()->hasRole('program_staff'))
@@ -235,7 +242,7 @@
                             </li>
                         @endif
 
-                        @if(auth()->user()->hasRole('agency_admin'))
+                        @if (auth()->user()->hasRole('agency_admin'))
                             <li class="nav-item">
                                 <hr class="text-black-50 mx-3">
                                 <small class="text-black-50 px-3">AGENCY DASHBOARD</small>
@@ -289,6 +296,13 @@
                                     Billing/Payroll
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('agency.calendar') ? 'active' : '' }}"
+                                    href="{{ route('agency.calendar') }}">
+                                    <i class="bi bi-calendar3"></i>
+                                    My Calendar
+                                </a>
+                            </li>
                         @endif
                     </ul>
 
@@ -296,7 +310,8 @@
                     <div class="position-absolute bottom-0 w-100 p-3">
                         <hr class="text-black-50">
                         <div class="dropdown">
-                            <a class="nav-link dropdown-toggle text-black" href="#" role="button" data-bs-toggle="dropdown">
+                            <a class="nav-link dropdown-toggle text-black" href="#" role="button"
+                                data-bs-toggle="dropdown">
                                 <i class="bi bi-person-circle"></i>
                                 {{ Auth::user()->full_name }}
                             </a>
@@ -371,6 +386,8 @@
             </main>
         </div>
     </div>
+
+    @stack('scripts')
 </body>
 
 </html>

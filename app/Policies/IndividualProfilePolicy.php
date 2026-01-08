@@ -25,10 +25,8 @@ class IndividualProfilePolicy
             return true;
         }
 
-        // User has role assignment for this individual
-        return $user->roleAssignments()
-            ->where('individual_profile_id', $individualProfile->id)
-            ->exists();
+        // User has access through Spatie Teams
+        return $individualProfile->userHasAccess($user->id);
     }
 
     /**

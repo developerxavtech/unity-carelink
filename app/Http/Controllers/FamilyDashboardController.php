@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\IndividualProfile;
+use App\Models\User;
 use App\Models\CareNote;
 use App\Models\MoodCheck;
 use App\Models\Conversation;
@@ -41,7 +42,7 @@ class FamilyDashboardController extends Controller
         $data = [
             'individualProfiles' => $individualProfiles,
             'unreadMessages' => $this->getUnreadMessageCount(),
-            'upcomingEvents' => 0, // TODO: Implement after CalendarEvent model created
+            'upcomingEvents' => Auth::user()->calendarEvents()->upcoming()->count(),
             'pendingItems' => 0,
         ];
 
@@ -81,6 +82,7 @@ class FamilyDashboardController extends Controller
             'recentNotes' => $recentNotes,
             'recentMoodChecks' => $recentMoodChecks,
             'selectedIndividual' => $selectedIndividual,
+            'availableDsps' => $this->getAvailableDsps(),
         ]);
     }
 
@@ -91,8 +93,11 @@ class FamilyDashboardController extends Controller
     {
         $individualProfiles = $this->getIndividualProfiles();
 
-        // TODO: Implement after CalendarEvent model is created
-        $events = collect([]);
+        // Get upcoming events for the authenticated user
+        $events = Auth::user()->calendarEvents()
+            ->upcoming()
+            ->limit(10)
+            ->get();
 
         return view('family.calendar', [
             'individualProfiles' => $individualProfiles,
@@ -139,6 +144,7 @@ class FamilyDashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
+
         return view('family.dsp-notes', [
             'individualProfiles' => $individualProfiles,
             'notes' => $notes,
@@ -180,16 +186,7 @@ class FamilyDashboardController extends Controller
      */
     public function messages()
     {
-        $user = Auth::user();
-
-        // Get conversations - basic implementation
-        // TODO: Enhance with proper conversation filtering and scopes
-        $conversations = collect([]);
-
-        return view('family.messages', [
-            'conversations' => $conversations,
-            'unreadCount' => $this->getUnreadMessageCount(),
-        ]);
+        return redirect()->route('chat.index');
     }
 
     /**
@@ -197,18 +194,7 @@ class FamilyDashboardController extends Controller
      */
     public function conversation(Conversation $conversation)
     {
-        // Verify user has access to this conversation
-        // TODO: Implement proper access control once conversation participants structure is defined
-
-        $messages = $conversation->messages()
-            ->with('user')
-            ->orderBy('created_at', 'asc')
-            ->get();
-
-        return view('family.conversation', [
-            'conversation' => $conversation,
-            'messages' => $messages,
-        ]);
+        return redirect()->route('chat.show', $conversation);
     }
 
     /**
@@ -235,6 +221,16 @@ class FamilyDashboardController extends Controller
         return view('family.resources', [
             'categories' => $categories,
         ]);
+    }
+
+
+    /**
+     * Get available DSPs for the user to chat with.
+     */
+    protected function getAvailableDsps()
+    {
+        // Without teams, we return all users with the DSP role.
+        return User::role('dsp')->get();
     }
 
     // Helper Methods

@@ -28,12 +28,9 @@ class ProgramDashboardController extends Controller
     {
         $this->checkProgramStaffRole();
 
-        $user = Auth::user();
-
-        return Organization::whereHas('roleAssignments', function ($query) use ($user) {
-            $query->where('user_id', $user->id)
-                  ->where('role_type', 'program_staff');
-        })->where('type', 'program')->get();
+        return Auth::user()->organizations()
+            ->where('type', 'program')
+            ->get();
     }
 
     /**
@@ -42,11 +39,10 @@ class ProgramDashboardController extends Controller
     protected function getProgramParticipants()
     {
         $programs = $this->getUserPrograms();
-        $programIds = $programs->pluck('id');
 
-        return IndividualProfile::whereHas('roleAssignments', function ($query) use ($programIds) {
-            $query->whereIn('organization_id', $programIds);
-        })->with(['careNotes', 'moodChecks'])->get();
+        return IndividualProfile::accessibleBy(Auth::id())
+            ->with(['careNotes', 'moodChecks'])
+            ->get();
     }
 
     /**

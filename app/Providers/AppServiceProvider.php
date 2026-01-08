@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
+            // Check if user has super_admin role without team context
+            // We use a direct check here or a specific team check if needed
+            return $user->hasRole('super_admin') ? true : null;
+        });
     }
 }

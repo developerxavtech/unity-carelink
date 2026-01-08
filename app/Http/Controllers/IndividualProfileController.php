@@ -16,27 +16,11 @@ class IndividualProfileController extends Controller
         $user = Auth::user();
 
         // Family admins see their own individuals
-        if ($user->hasRole('family_admin')) {
-            $individuals = $user->individualProfiles()->with('careNotes', 'moodChecks')->get();
-        }
-        // DSPs see individuals they support
-        elseif ($user->hasRole('dsp')) {
-            $individuals = IndividualProfile::whereHas('roleAssignments', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })->with('careNotes', 'moodChecks')->get();
-        }
-        // Agency admins see all individuals in their organization
-        elseif ($user->hasRole('agency_admin')) {
-            $organizationId = $user->roleAssignments()
-                ->where('role_type', 'agency_admin')
-                ->first()
-                ?->organization_id;
-
-            $individuals = IndividualProfile::whereHas('roleAssignments', function ($query) use ($organizationId) {
-                $query->where('organization_id', $organizationId);
-            })->with('careNotes', 'moodChecks')->get();
-        }
-        else {
+        if ($user->hasRole('family_admin|dsp|agency_admin|program_staff')) {
+            $individuals = IndividualProfile::accessibleBy($user->id)
+                ->with('careNotes', 'moodChecks')
+                ->get();
+        } else {
             $individuals = collect();
         }
 
@@ -87,7 +71,7 @@ class IndividualProfileController extends Controller
         // Check authorization
         $this->authorize('view', $individual);
 
-        $individual->load(['careNotes', 'moodChecks', 'roleAssignments.user']);
+        $individual->load(['careNotes', 'moodChecks', 'team.users']);
 
         return view('individuals.show', compact('individual'));
     }

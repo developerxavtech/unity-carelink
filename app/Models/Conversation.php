@@ -10,35 +10,56 @@ class Conversation extends Model
     use HasFactory;
 
     protected $fillable = [
+        'individual_profile_id',
+        'subject',
         'type',
         'scope_type',
         'scope_id',
         'name',
-        'participants',
         'settings',
     ];
 
     protected $casts = [
-        'participants' => 'array',
         'settings' => 'array',
     ];
 
     // Relationships
+
+    public function participants()
+    {
+        return $this->belongsToMany(User::class, 'conversation_participants')
+            ->withPivot('last_read_at')
+            ->withTimestamps();
+    }
 
     public function messages()
     {
         return $this->hasMany(Message::class);
     }
 
+    public function individualProfile()
+    {
+        return $this->belongsTo(IndividualProfile::class);
+    }
+
     // Scopes
 
     public function scopeForUser($query, int $userId)
     {
-        return $query->where(function($q) use ($userId) {
-            $q->whereJsonContains('participants', $userId)
-              ->orWhereHas('messages', function($mq) use ($userId) {
-                  $mq->where('user_id', $userId);
-              });
+        return $query->whereHas('participants', function ($q) use ($userId) {
+            $q->where('user_id', $userId);
         });
+    }
+
+    // Helpers
+
+    public function addParticipant(int $userId)
+    {
+        return $this->participants()->syncWithoutDetaching([$userId]);
+    }
+
+    public function removeParticipant(int $userId)
+    {
+        return $this->participants()->detach($userId);
     }
 }
