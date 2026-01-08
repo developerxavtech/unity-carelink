@@ -129,28 +129,7 @@
 
                     <hr class="my-4">
 
-                    <!-- User Status Widget -->
-                    <div class="mb-4">
-                        <h6 class="text-muted mb-3">
-                            <i class="bi bi-heart-pulse"></i>
-                            CarePulse Check-In
-                        </h6>
-                        <div
-                            class="alert {{ Auth::user()->isBusy() ? 'alert-warning' : 'alert-light' }} border d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="fs-4">{{ Auth::user()->status_emoji ?? '📍' }}</span>
-                                <span class="ms-2 fw-bold">{{ Auth::user()->activity_status ?? 'Available' }}</span>
-                                @if(Auth::user()->status_busy_until && Auth::user()->isBusy())
-                                    <div class="text-muted small ms-5">
-                                        Until {{ Auth::user()->status_busy_until->format('g:i A') }}
-                                    </div>
-                                @endif
-                            </div>
-                            <a href="{{ route('family.status.edit') }}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                        </div>
-                    </div>
+
 
                     <hr class="my-4">
 
@@ -209,15 +188,16 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    @if($individualProfiles->count() > 0)
+                    @if ($individualProfiles->count() > 0)
                         <div class="row">
-                            @foreach($individualProfiles as $individual)
+                            @foreach ($individualProfiles as $individual)
                                 <div class="col-md-6 mb-3">
                                     <div class="card border">
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <h6 class="mb-1">{{ $individual->first_name }} {{ $individual->last_name }}
+                                                    <h6 class="mb-1">{{ $individual->first_name }}
+                                                        {{ $individual->last_name }}
                                                     </h6>
                                                     <small class="text-muted">{{ $individual->age }} years old</small>
                                                 </div>

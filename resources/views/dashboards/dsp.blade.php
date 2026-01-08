@@ -159,6 +159,31 @@
                             Request Shift Swap
                         </button>
                     </div>
+
+                    <hr class="my-4">
+
+                    <!-- User Status Widget -->
+                    <div class="mb-2">
+                        <h6 class="text-muted mb-3">
+                            <i class="bi bi-heart-pulse"></i>
+                            CarePulse Check-In
+                        </h6>
+                        <div
+                            class="alert {{ Auth::user()->isBusy() ? 'alert-warning' : 'alert-light' }} border d-flex justify-content-between align-items-center mb-0">
+                            <div>
+                                <span class="fs-4">{{ Auth::user()->status_emoji ?? '📍' }}</span>
+                                <span class="ms-2 fw-bold">{{ Auth::user()->activity_status ?? 'Available' }}</span>
+                                @if (Auth::user()->status_busy_until && Auth::user()->isBusy())
+                                    <div class="text-muted small ms-5">
+                                        Until {{ Auth::user()->status_busy_until->format('g:i A') }}
+                                    </div>
+                                @endif
+                            </div>
+                            <a href="{{ route('dsp.status.edit') }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
 

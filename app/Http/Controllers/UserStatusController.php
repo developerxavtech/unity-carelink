@@ -11,7 +11,11 @@ class UserStatusController extends Controller
      */
     public function edit(Request $request)
     {
-        return view('family.status.edit', [
+        $view = $request->user()->hasAnyRole(['dsp', 'program_staff'])
+            ? 'dsp.status.edit'
+            : 'family.status.edit';
+
+        return view($view, [
             'user' => $request->user(),
         ]);
     }

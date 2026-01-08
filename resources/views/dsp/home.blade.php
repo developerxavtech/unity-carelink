@@ -82,11 +82,13 @@
                         @forelse($todaysNotes as $note)
                             <div class="border-start border-3 border-primary ps-3 mb-3">
                                 <div class="d-flex justify-content-between align-items-start mb-1">
-                                    <h6 class="mb-0">{{ $note->individualProfile->first_name }} {{ $note->individualProfile->last_name }}</h6>
+                                    <h6 class="mb-0">{{ $note->individualProfile->first_name }}
+                                        {{ $note->individualProfile->last_name }}</h6>
                                     <small class="text-muted">{{ $note->created_at->format('g:i A') }}</small>
                                 </div>
-                                @if($note->mood)
-                                    <span class="badge bg-{{ $note->mood === 'great' ? 'success' : ($note->mood === 'good' ? 'info' : ($note->mood === 'okay' ? 'warning' : 'danger')) }} mb-2">
+                                @if ($note->mood)
+                                    <span
+                                        class="badge bg-{{ $note->mood === 'great' ? 'success' : ($note->mood === 'good' ? 'info' : ($note->mood === 'okay' ? 'warning' : 'danger')) }} mb-2">
                                         {{ ucfirst($note->mood) }}
                                     </span>
                                 @endif
@@ -119,7 +121,8 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <h6 class="mb-0">{{ $individual->first_name }} {{ $individual->last_name }}</h6>
-                                    <small class="text-muted">Age {{ $individual->date_of_birth ? \Carbon\Carbon::parse($individual->date_of_birth)->age : 'N/A' }}</small>
+                                    <small class="text-muted">Age
+                                        {{ $individual->date_of_birth ? \Carbon\Carbon::parse($individual->date_of_birth)->age : 'N/A' }}</small>
                                 </div>
                             </div>
                         @empty
@@ -129,11 +132,36 @@
                             </div>
                         @endforelse
 
-                        @if($individuals->count() > 0)
+                        @if ($individuals->count() > 0)
                             <a href="{{ route('dsp.participants') }}" class="btn btn-outline-primary btn-sm w-100">
                                 View All Participants
                             </a>
                         @endif
+                    </div>
+                </div>
+
+                <!-- User Status Widget -->
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-3">
+                            <i class="bi bi-heart-pulse"></i>
+                            CarePulse Check-In
+                        </h6>
+                        <div
+                            class="alert {{ Auth::user()->isBusy() ? 'alert-warning' : 'alert-light' }} border d-flex justify-content-between align-items-center mb-0">
+                            <div>
+                                <span class="fs-4">{{ Auth::user()->status_emoji ?? '📍' }}</span>
+                                <span class="ms-2 fw-bold">{{ Auth::user()->activity_status ?? 'Available' }}</span>
+                                @if (Auth::user()->status_busy_until && Auth::user()->isBusy())
+                                    <div class="text-muted small ms-5">
+                                        Until {{ Auth::user()->status_busy_until->format('g:i A') }}
+                                    </div>
+                                @endif
+                            </div>
+                            <a href="{{ route('dsp.status.edit') }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

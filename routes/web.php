@@ -14,6 +14,8 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CalendarEventController;
 use Illuminate\Support\Facades\Route;
 
+
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -63,6 +65,11 @@ Route::middleware(['auth', 'verified'])->prefix('dsp')->name('dsp.')->group(func
     Route::get('/messages/{conversation}', [DspDashboardController::class, 'conversation'])->name('messages.show');
     Route::get('/time-tracking', [DspDashboardController::class, 'timeTracking'])->name('time-tracking');
     Route::get('/calendar', [DspDashboardController::class, 'calendar'])->name('calendar');
+
+    // Status Routes
+    Route::get('/status/edit', [UserStatusController::class, 'edit'])->name('status.edit');
+    Route::post('/status/update', [UserStatusController::class, 'update'])->name('status.update');
+    Route::post('/status/clear', [UserStatusController::class, 'clear'])->name('status.clear');
 });
 
 // Program Dashboard Routes

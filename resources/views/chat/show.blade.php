@@ -72,7 +72,20 @@
                                                     {{ $participant->last_name }}
                                                 </div>
                                                 <small
-                                                    class="text-muted">{{ $participant->getRoleNames()->first() }}</small>
+                                                    class="text-muted d-block">{{ $participant->getRoleNames()->first() }}</small>
+                                                @if ($participant->activity_status)
+                                                    <small class="text-primary d-block mt-1 boarder-top pt-1">
+                                                        {{ $participant->status_emoji }}
+                                                        {{ $participant->activity_status }}
+                                                        @if ($participant->isBusy() && $participant->status_busy_until)
+                                                            <span class="text-muted d-block"
+                                                                style="font-size: 0.75rem;">
+                                                                (Busy until
+                                                                {{ $participant->status_busy_until->format('g:i A') }})
+                                                            </span>
+                                                        @endif
+                                                    </small>
+                                                @endif
                                             </div>
                                         </div>
                                     </li>
