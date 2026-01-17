@@ -134,16 +134,27 @@
                     <hr class="my-4">
 
                     <!-- CarePulse Widget -->
-                    <!-- <div class="mb-3">
+                    <div class="mb-3">
                         <h6 class="text-muted mb-3">
                             <i class="bi bi-heart-pulse"></i>
                             CarePulse Check-In
                         </h6>
-                        <div class="alert alert-light border text-center">
-                            <p class="mb-2">How is everyone doing today?</p>
-                            <small class="text-muted">Check-in feature coming soon</small>
+                        <div
+                            class="alert {{ Auth::user()->isBusy() ? 'alert-warning' : 'alert-light' }} border d-flex justify-content-between align-items-center mb-0">
+                            <div>
+                                <span class="fs-4">{{ Auth::user()->status_emoji ?? '📍' }}</span>
+                                <span class="ms-2 fw-bold">{{ Auth::user()->activity_status ?? 'Available' }}</span>
+                                @if (Auth::user()->status_busy_until && Auth::user()->isBusy())
+                                    <div class="text-muted small ms-5">
+                                        Until {{ Auth::user()->status_busy_until->format('g:i A') }}
+                                    </div>
+                                @endif
+                            </div>
+                            <a href="{{ route('family.status.edit') }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
                         </div>
-                    </div> -->
+                    </div>
                 </div>
             </div>
 

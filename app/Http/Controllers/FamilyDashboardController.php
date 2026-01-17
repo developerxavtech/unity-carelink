@@ -14,12 +14,12 @@ use Illuminate\Support\Facades\Auth;
 class FamilyDashboardController extends Controller
 {
     /**
-     * Check if user has family_admin role
+     * Check if user has family_member or family_admin role
      */
     protected function checkFamilyAdminRole()
     {
-        if (!Auth::user()->hasRole('family_admin')) {
-            abort(403, 'Access denied. Family admin role required.');
+        if (!Auth::user()->hasAnyRole(['family_member', 'family_admin'])) {
+            abort(403, 'Access denied. Family role required.');
         }
     }
 

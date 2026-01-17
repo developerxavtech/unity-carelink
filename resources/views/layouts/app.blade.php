@@ -307,17 +307,16 @@
                     </ul>
 
                     <!-- User Menu (Bottom) -->
-                    <div class="position-absolute bottom-0 w-100 p-3">
-                        <hr class="text-black-50">
+                    <div class="sidebar-footer">
                         <div class="dropdown">
-                            <a class="nav-link dropdown-toggle text-black" href="#" role="button"
-                                data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle"></i>
-                                {{ Auth::user()->full_name }}
+                            <a class="nav-link dropdown-toggle text-black d-flex align-items-center" href="#"
+                                role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle fs-5 me-2"></i>
+                                <span class="text-truncate">{{ Auth::user()->full_name }}</span>
                             </a>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu shadow">
                                 <li><a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                        <i class="bi bi-gear"></i> Profile
+                                        <i class="bi bi-gear me-2"></i> Profile
                                     </a></li>
                                 <li>
                                     <hr class="dropdown-divider">
@@ -325,8 +324,8 @@
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="bi bi-box-arrow-right"></i> Logout
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="bi bi-box-arrow-right me-2"></i> Logout
                                         </button>
                                     </form>
                                 </li>

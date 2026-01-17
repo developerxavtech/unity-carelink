@@ -110,7 +110,7 @@ class User extends Authenticatable
     {
         // Without teams, family admin sees their own. 
         // DSPs/Staff might need a new assignment system, but for now we see all or none.
-        if ($this->hasRole('family_admin')) {
+        if ($this->hasAnyRole(['family_admin', 'family_member'])) {
             return $this->individualProfiles();
         }
 
