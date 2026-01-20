@@ -30,6 +30,7 @@ class User extends Authenticatable
         'status_emoji',
         'status_message',
         'status_busy_until',
+        'family_admin_id',
     ];
 
     /**
@@ -182,5 +183,21 @@ class User extends Authenticatable
     public function calendarEvents()
     {
         return $this->hasMany(CalendarEvent::class);
+    }
+
+    /**
+     * The admin of this user's family (if this user is a family member).
+     */
+    public function familyAdmin()
+    {
+        return $this->belongsTo(User::class, 'family_admin_id');
+    }
+
+    /**
+     * Members belonging to this family (if this user is a family admin).
+     */
+    public function familyMembers()
+    {
+        return $this->hasMany(User::class, 'family_admin_id');
     }
 }

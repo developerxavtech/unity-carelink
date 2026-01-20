@@ -178,6 +178,7 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'phone' => '555-0106',
                 'status' => 'active',
+                'family_admin_id' => $familyUser->id,
             ]
         );
 

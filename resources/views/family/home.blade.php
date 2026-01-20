@@ -191,10 +191,10 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
                             <i class="bi bi-people text-primary"></i>
-                            My Loved Ones
+                            Family Members
                         </h5>
                         <a href="{{ route('individuals.create') }}" class="btn btn-sm btn-primary">
-                            <i class="bi bi-plus-circle"></i> Add Individual
+                            <i class="bi bi-plus-circle"></i> Add Family Member
                         </a>
                     </div>
                 </div>
@@ -229,9 +229,9 @@
                     @else
                         <div class="text-center py-5">
                             <i class="bi bi-person-plus fs-1 text-muted mb-3"></i>
-                            <h5 class="text-muted">No Individual Profiles Yet</h5>
+                            <h5 class="text-muted">No Family Members Yet</h5>
                             <p class="text-muted mb-4">
-                                Get started by creating a profile for your loved one.<br>
+                                Get started by creating a profile for a family member.<br>
                                 This will be the central hub for all their care coordination.
                             </p>
                             <a href="{{ route('individuals.create') }}" class="btn btn-primary">

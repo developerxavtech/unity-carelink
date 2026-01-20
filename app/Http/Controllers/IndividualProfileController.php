@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\IndividualProfile;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,17 +15,29 @@ class IndividualProfileController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $familyUsers = collect();
 
-        // Family admins see their own individuals
-        if ($user->hasRole('family_admin|dsp|agency_admin|program_staff')) {
+        // Family admins and members see their family's individuals
+        if ($user->hasRole('family_admin|family_member|dsp|agency_admin|program_staff')) {
             $individuals = IndividualProfile::accessibleBy($user->id)
                 ->with('careNotes', 'moodChecks')
                 ->get();
+
+            // If family admin, also get their linked family members (users)
+            if ($user->hasRole('family_admin')) {
+                $familyUsers = $user->familyMembers;
+            } elseif ($user->hasRole('family_member')) {
+                // If family member, get the admin and other members
+                $familyUsers = User::where('id', $user->family_admin_id)
+                    ->orWhere('family_admin_id', $user->family_admin_id)
+                    ->get()
+                    ->reject(fn($u) => $u->id === $user->id);
+            }
         } else {
             $individuals = collect();
         }
 
-        return view('individuals.index', compact('individuals'));
+        return view('individuals.index', compact('individuals', 'familyUsers'));
     }
 
     /**

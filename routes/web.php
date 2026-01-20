@@ -12,6 +12,7 @@ use App\Http\Controllers\MoodCheckController;
 use App\Http\Controllers\UserStatusController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CalendarEventController;
+use App\Http\Controllers\FamilyMemberController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -40,6 +41,9 @@ Route::middleware(['auth', 'verified'])->prefix('family')->name('family.')->grou
     Route::get('/status/edit', [UserStatusController::class, 'edit'])->name('status.edit');
     Route::post('/status/update', [UserStatusController::class, 'update'])->name('status.update');
     Route::post('/status/clear', [UserStatusController::class, 'clear'])->name('status.clear');
+
+    // Family Member Management
+    Route::resource('members', FamilyMemberController::class);
 });
 
 // Chat Routes

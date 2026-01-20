@@ -127,8 +127,13 @@ class IndividualProfile extends Model
     {
         $user = User::find($userId);
 
-        if ($user && $user->hasAnyRole(['family_admin', 'family_member'])) {
+        if ($user && $user->hasRole('family_admin')) {
             return $query->where('family_user_id', $userId);
+        }
+
+        if ($user && $user->hasRole('family_member')) {
+            // For now, family members see all profiles like DSPs do until a direct link is added
+            return $query;
         }
 
         // Staff and DSPs see all for now until a new assignment system is added.
