@@ -208,4 +208,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(DspProfile::class);
     }
+
+    public function isDspVerified(): bool
+    {
+        return $this->dspProfile?->is_verified == 1;
+    }
 }

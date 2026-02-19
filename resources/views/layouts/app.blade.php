@@ -103,7 +103,10 @@
                                     My Loved Ones
                                 </a>
                             </li>
-                        @elseif(auth()->user()->hasRole('dsp'))
+                        @elseif(auth()->user()->hasRole('dsp') && auth()->user()->isDspVerified())
+                            @php
+                                $isVerified = auth()->user()->isDspVerified();
+                            @endphp
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
                                     href="{{ route('dashboard') }}">
@@ -116,64 +119,73 @@
                                 <small class="text-black-50 px-3">DSP DASHBOARD</small>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('dsp.home') ? 'active' : '' }}"
-                                    href="{{ route('dsp.home') }}">
+                                <a class="nav-link {{ !$isVerified ? 'locked' : (request()->routeIs('dsp.home') ? 'active' : '') }}"
+                                    href="{{ $isVerified ? route('dsp.home') : 'javascript:void(0)' }}"
+                                    {!! !$isVerified ? 'title="Verification Required"' : '' !!}>
                                     <i class="bi bi-calendar-day"></i>
                                     Today's Plan
                                 </a>
                             </li>
                             {{-- <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('dsp.participants') ? 'active' : '' }}"
-                                    href="{{ route('dsp.participants') }}">
+                                <a class="nav-link {{ !$isVerified ? 'locked' : (request()->routeIs('dsp.participants') ? 'active' : '') }}"
+                                    href="{{ $isVerified ? route('dsp.participants') : 'javascript:void(0)' }}"
+                                    {!! !$isVerified ? 'title="Verification Required"' : '' !!}>
                                     <i class="bi bi-people"></i>
                                     Participants
                                 </a>
                             </li> --}}
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('dsp.daily-logs') ? 'active' : '' }}"
-                                    href="{{ route('dsp.daily-logs') }}">
+                                <a class="nav-link {{ !$isVerified ? 'locked' : (request()->routeIs('dsp.daily-logs') ? 'active' : '') }}"
+                                    href="{{ $isVerified ? route('dsp.daily-logs') : 'javascript:void(0)' }}"
+                                    {!! !$isVerified ? 'title="Verification Required"' : '' !!}>
                                     <i class="bi bi-journal-text"></i>
                                     Daily Logs
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('dsp.skill-tracking') ? 'active' : '' }}"
-                                    href="{{ route('dsp.skill-tracking') }}">
+                                <a class="nav-link {{ !$isVerified ? 'locked' : (request()->routeIs('dsp.skill-tracking') ? 'active' : '') }}"
+                                    href="{{ $isVerified ? route('dsp.skill-tracking') : 'javascript:void(0)' }}"
+                                    {!! !$isVerified ? 'title="Verification Required"' : '' !!}>
                                     <i class="bi bi-graph-up"></i>
                                     Skill Tracking
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('dsp.rides') ? 'active' : '' }}"
-                                    href="{{ route('dsp.rides') }}">
+                                <a class="nav-link {{ !$isVerified ? 'locked' : (request()->routeIs('dsp.rides') ? 'active' : '') }}"
+                                    href="{{ $isVerified ? route('dsp.rides') : 'javascript:void(0)' }}"
+                                    {!! !$isVerified ? 'title="Verification Required"' : '' !!}>
                                     <i class="bi bi-car-front"></i>
                                     Ride Assigned
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('dsp.peer-support') ? 'active' : '' }}"
-                                    href="{{ route('dsp.peer-support') }}">
+                                <a class="nav-link {{ !$isVerified ? 'locked' : (request()->routeIs('dsp.peer-support') ? 'active' : '') }}"
+                                    href="{{ $isVerified ? route('dsp.peer-support') : 'javascript:void(0)' }}"
+                                    {!! !$isVerified ? 'title="Verification Required"' : '' !!}>
                                     <i class="bi bi-people-fill"></i>
                                     Peer Support
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('chat.*') ? 'active' : '' }}"
-                                    href="{{ route('chat.index') }}">
+                                <a class="nav-link {{ !$isVerified ? 'locked' : (request()->routeIs('chat.*') ? 'active' : '') }}"
+                                    href="{{ $isVerified ? route('chat.index') : 'javascript:void(0)' }}"
+                                    {!! !$isVerified ? 'title="Verification Required"' : '' !!}>
                                     <i class="bi bi-chat-dots"></i>
                                     Messages
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('dsp.time-tracking') ? 'active' : '' }}"
-                                    href="{{ route('dsp.time-tracking') }}">
+                                <a class="nav-link {{ !$isVerified ? 'locked' : (request()->routeIs('dsp.time-tracking') ? 'active' : '') }}"
+                                    href="{{ $isVerified ? route('dsp.time-tracking') : 'javascript:void(0)' }}"
+                                    {!! !$isVerified ? 'title="Verification Required"' : '' !!}>
                                     <i class="bi bi-clock-history"></i>
                                     Time Tracking
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('dsp.calendar') ? 'active' : '' }}"
-                                    href="{{ route('dsp.calendar') }}">
+                                <a class="nav-link {{ !$isVerified ? 'locked' : (request()->routeIs('dsp.calendar') ? 'active' : '') }}"
+                                    href="{{ $isVerified ? route('dsp.calendar') : 'javascript:void(0)' }}"
+                                    {!! !$isVerified ? 'title="Verification Required"' : '' !!}>
                                     <i class="bi bi-calendar3"></i>
                                     My Calendar
                                 </a>
@@ -317,9 +329,9 @@
 
                                     @role('dsp')
                                         <p
-                                            class="text-truncate mb-0 verification-status {{ optional(Auth::user()->dspProfile)->is_verified == 1 ? 'verified' : '' }}">
+                                            class="text-truncate mb-0 verification-status {{ Auth::user()->isDspVerified() ? 'verified' : '' }}">
                                             <i class="bi bi-patch-check-fill"></i>
-                                            {{ optional(Auth::user()->dspProfile)->is_verified == 1 ? 'Verified' : 'Not Verified' }}
+                                            {{ Auth::user()->isDspVerified() ? 'Verified' : 'Not Verified' }}
                                         </p>
                                     @endrole
                                 </div>
@@ -398,6 +410,68 @@
     </div>
 
     @stack('scripts')
+
+    <!-- Verification Reminder Modal -->
+    @if (Auth::user()->hasRole('dsp') && !Auth::user()->isDspVerified())
+        <div class="modal fade" id="verificationModal" tabindex="-1" aria-labelledby="verificationModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 1.5rem;">
+                    <div class="modal-header border-0 pb-0">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center pt-0 pb-4">
+                        <div class="mb-4">
+                            <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 rounded-circle"
+                                style="width: 80px; height: 80px;">
+                                <i class="bi bi-shield-lock text-primary fs-1"></i>
+                            </div>
+                        </div>
+                        <h3 class="fw-bold mb-3">Verification Required</h3>
+                        <p class="text-muted mb-4 px-3">
+                            To access all the powerful features of Unity CareLink, please complete your profile
+                            information and verify your phone number.
+                        </p>
+                        <div class="d-grid gap-2 px-4">
+                            <a href="{{ route('profile.edit') }}" class="btn btn-primary btn-lg fw-bold"
+                                style="border-radius: 1rem;">
+                                Complete Profile
+                            </a>
+                            <button type="button" class="btn btn-link text-muted text-decoration-none"
+                                data-bs-dismiss="modal">
+                                I'll do it later
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+
+                const modalElement = document.getElementById('verificationModal');
+                if (!modalElement) return;
+
+                // Create unique key per page
+                const pageKey = 'verificationModalClosed_' + window.location.pathname;
+
+                // If not closed before on this page
+                if (!sessionStorage.getItem(pageKey)) {
+
+                    const myModal = new bootstrap.Modal(modalElement);
+                    myModal.show();
+
+                    // When modal is closed → store state
+                    modalElement.addEventListener('hidden.bs.modal', function() {
+                        sessionStorage.setItem(pageKey, 'true');
+                    });
+                }
+
+            });
+        </script>
+    @endif
 </body>
 
 </html>

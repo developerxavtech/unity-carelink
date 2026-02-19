@@ -60,23 +60,27 @@ Route::middleware(['auth', 'verified'])->prefix('chat')->name('chat.')->group(fu
 
 // DSP Dashboard Routes
 Route::middleware(['auth', 'verified'])->prefix('dsp')->name('dsp.')->group(function () {
-    Route::get('/home', [DspDashboardController::class, 'home'])->name('home');
-    Route::get('/participants', [DspDashboardController::class, 'participants'])->name('participants');
-    Route::get('/daily-logs', [DspDashboardController::class, 'dailyLogs'])->name('daily-logs');
-    Route::get('/skill-tracking', [DspDashboardController::class, 'skillTracking'])->name('skill-tracking');
-    Route::get('/rides', [DspDashboardController::class, 'rides'])->name('rides');
-    Route::get('/peer-support', [DspDashboardController::class, 'peerSupport'])->name('peer-support');
-    Route::get('/messages', [DspDashboardController::class, 'messages'])->name('messages');
-    Route::get('/messages/{conversation}', [DspDashboardController::class, 'conversation'])->name('messages.show');
-    Route::get('/time-tracking', [DspDashboardController::class, 'timeTracking'])->name('time-tracking');
-    Route::get('/calendar', [DspDashboardController::class, 'calendar'])->name('calendar');
 
-    // Status Routes
-    Route::get('/status/edit', [UserStatusController::class, 'edit'])->name('status.edit');
-    Route::post('/status/update', [UserStatusController::class, 'update'])->name('status.update');
-    Route::post('/status/clear', [UserStatusController::class, 'clear'])->name('status.clear');
+    // Verified DSP Only Routes
+    Route::middleware(['dsp.verified'])->group(function () {
+        Route::get('/home', [DspDashboardController::class, 'home'])->name('home');
+        Route::get('/participants', [DspDashboardController::class, 'participants'])->name('participants');
+        Route::get('/daily-logs', [DspDashboardController::class, 'dailyLogs'])->name('daily-logs');
+        Route::get('/skill-tracking', [DspDashboardController::class, 'skillTracking'])->name('skill-tracking');
+        Route::get('/rides', [DspDashboardController::class, 'rides'])->name('rides');
+        Route::get('/peer-support', [DspDashboardController::class, 'peerSupport'])->name('peer-support');
+        Route::get('/messages', [DspDashboardController::class, 'messages'])->name('messages');
+        Route::get('/messages/{conversation}', [DspDashboardController::class, 'conversation'])->name('messages.show');
+        Route::get('/time-tracking', [DspDashboardController::class, 'timeTracking'])->name('time-tracking');
+        Route::get('/calendar', [DspDashboardController::class, 'calendar'])->name('calendar');
 
-    // Onboarding Routes
+        // Status Routes
+        Route::get('/status/edit', [UserStatusController::class, 'edit'])->name('status.edit');
+        Route::post('/status/update', [UserStatusController::class, 'update'])->name('status.update');
+        Route::post('/status/clear', [UserStatusController::class, 'clear'])->name('status.clear');
+    });
+
+    // Onboarding Routes (Available to unverified DSPs)
     Route::post('/profile-setup', [DspOnboardingController::class, 'update'])->name('onboarding.update');
     Route::get('/verify', [DspOnboardingController::class, 'verify'])->name('onboarding.verify');
     Route::post('/verify', [DspOnboardingController::class, 'verifyCode'])->name('onboarding.verify.check');
