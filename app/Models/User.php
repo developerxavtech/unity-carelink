@@ -200,4 +200,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(User::class, 'family_admin_id');
     }
+
+    /**
+     * DSP profile associated with this user.
+     */
+    public function dspProfile()
+    {
+        return $this->hasOne(DspProfile::class);
+    }
 }

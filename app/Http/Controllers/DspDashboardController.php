@@ -41,6 +41,13 @@ class DspDashboardController extends Controller
      */
     public function home()
     {
+        $user = Auth::user();
+
+        // Redirect to onboarding if not verified
+        if ($user->hasRole('dsp') && (!$user->dspProfile || !$user->dspProfile->is_verified)) {
+            return redirect()->route('profile.edit');
+        }
+
         $individuals = $this->getAssignedIndividuals();
 
         // Get today's care notes

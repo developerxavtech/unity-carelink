@@ -34,6 +34,7 @@ class RegisteredUserController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'string', 'in:family_admin,family_member,dsp,agency_admin,program_staff,super_admin'],
         ]);
 
         $user = User::create([
@@ -41,8 +42,14 @@ class RegisteredUserController extends Controller
             'last_name' => $request->last_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'status' => 'active', // Ensure status is set
+            'status' => 'active',
         ]);
+
+        try {
+            $user->assignRole($request->role);
+        } catch (\Exception $e) {
+            \Log::error('Role assignment failed: ' . $e->getMessage());
+        }
 
         event(new Registered($user));
 

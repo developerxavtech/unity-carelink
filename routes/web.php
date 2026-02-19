@@ -13,6 +13,7 @@ use App\Http\Controllers\UserStatusController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CalendarEventController;
 use App\Http\Controllers\FamilyMemberController;
+use App\Http\Controllers\DspOnboardingController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -74,6 +75,11 @@ Route::middleware(['auth', 'verified'])->prefix('dsp')->name('dsp.')->group(func
     Route::get('/status/edit', [UserStatusController::class, 'edit'])->name('status.edit');
     Route::post('/status/update', [UserStatusController::class, 'update'])->name('status.update');
     Route::post('/status/clear', [UserStatusController::class, 'clear'])->name('status.clear');
+
+    // Onboarding Routes
+    Route::post('/profile-setup', [DspOnboardingController::class, 'update'])->name('onboarding.update');
+    Route::get('/verify', [DspOnboardingController::class, 'verify'])->name('onboarding.verify');
+    Route::post('/verify', [DspOnboardingController::class, 'verifyCode'])->name('onboarding.verify.check');
 });
 
 // Program Dashboard Routes

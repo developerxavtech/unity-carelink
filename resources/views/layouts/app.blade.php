@@ -122,13 +122,13 @@
                                     Today's Plan
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('dsp.participants') ? 'active' : '' }}"
                                     href="{{ route('dsp.participants') }}">
                                     <i class="bi bi-people"></i>
                                     Participants
                                 </a>
-                            </li>
+                            </li> --}}
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('dsp.daily-logs') ? 'active' : '' }}"
                                     href="{{ route('dsp.daily-logs') }}">
@@ -306,13 +306,24 @@
                         @endif
                     </ul>
 
-                    <!-- User Menu (Bottom) -->
                     <div class="sidebar-footer">
                         <div class="dropdown">
                             <a class="nav-link dropdown-toggle text-black d-flex align-items-center" href="#"
                                 role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-person-circle fs-5 me-2"></i>
-                                <span class="text-truncate">{{ Auth::user()->full_name }}</span>
+                                <div>
+                                    <p class="text-truncate mb-0">{{ Auth::user()->full_name }}
+                                    </p>
+
+                                    @role('dsp')
+                                        <p
+                                            class="text-truncate mb-0 verification-status {{ optional(Auth::user()->dspProfile)->is_verified == 1 ? 'verified' : '' }}">
+                                            <i class="bi bi-patch-check-fill"></i>
+                                            {{ optional(Auth::user()->dspProfile)->is_verified == 1 ? 'Verified' : 'Not Verified' }}
+                                        </p>
+                                    @endrole
+                                </div>
+
                             </a>
                             <ul class="dropdown-menu shadow">
                                 <li><a class="dropdown-item" href="{{ route('profile.edit') }}">

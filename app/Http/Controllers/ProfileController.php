@@ -16,8 +16,12 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user();
+        $dspProfile = $user->hasRole('dsp') ? $user->dspProfile : null;
+
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
+            'profile' => $dspProfile,
         ]);
     }
 
