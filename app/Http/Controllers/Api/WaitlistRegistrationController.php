@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\WaitlistWelcomeMail;
 use App\Models\User;
 use App\Services\TwilioService;
 use Illuminate\Auth\Events\Registered;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -86,6 +88,12 @@ class WaitlistRegistrationController extends Controller
             $user->phone,
             "Welcome to Unity CareLink! Your temporary password is: {$tempPassword}. Log in and change it from your profile settings."
         );
+
+        try {
+            Mail::to($user->email)->send(new WaitlistWelcomeMail($user, $tempPassword));
+        } catch (\Throwable $e) {
+            Log::error('Join-waitlist welcome email failed: ' . $e->getMessage());
+        }
 
         event(new Registered($user));
 
