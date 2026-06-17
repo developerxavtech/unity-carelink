@@ -44,16 +44,16 @@
                 <option value="" disabled selected>{{ __('Select your role') }}</option>
                 <option value="family_admin" {{ old('role') == 'family_admin' ? 'selected' : '' }}>
                     {{ __('Family Admin') }}</option>
-                <option value="family_member" {{ old('role') == 'family_member' ? 'selected' : '' }}>
-                    {{ __('Family Member') }}</option>
+                {{-- <option value="family_member" {{ old('role') == 'family_member' ? 'selected' : '' }}>
+                    {{ __('Family Member') }}</option> --}}
                 <option value="dsp" {{ old('role') == 'dsp' ? 'selected' : '' }}>
                     {{ __('Direct Support Professional (DSP)') }}</option>
-                <option value="agency_admin" {{ old('role') == 'agency_admin' ? 'selected' : '' }}>
+                {{-- <option value="agency_admin" {{ old('role') == 'agency_admin' ? 'selected' : '' }}>
                     {{ __('Agency Admin') }}</option>
                 <option value="program_staff" {{ old('role') == 'program_staff' ? 'selected' : '' }}>
                     {{ __('Program Staff') }}</option>
                 <option value="super_admin" {{ old('role') == 'super_admin' ? 'selected' : '' }}>
-                    {{ __('Super Admin') }}</option>
+                    {{ __('Super Admin') }}</option> --}}
             </select>
             <x-input-error :messages="$errors->get('role')" />
         </div>
