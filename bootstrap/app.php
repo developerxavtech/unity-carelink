@@ -14,6 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'dsp.verified' => \App\Http\Middleware\EnsureDspIsVerified::class,
         ]);
+
+        // The public join-waitlist form is posted from outside this app
+        // (no Laravel-rendered CSRF token available), so it's exempted here.
+        $middleware->validateCsrfTokens(except: [
+            'api/register-join-waitlist',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

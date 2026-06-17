@@ -213,4 +213,20 @@ class User extends Authenticatable
     {
         return $this->dspProfile?->is_verified == 1;
     }
+
+    /**
+     * Join-waitlist intake details for a family account.
+     */
+    public function familyWaitlistDetail()
+    {
+        return $this->hasOne(FamilyWaitlistDetail::class);
+    }
+
+    /**
+     * Join-waitlist intake details for a DSP account.
+     */
+    public function dspWaitlistDetail()
+    {
+        return $this->hasOne(DspWaitlistDetail::class);
+    }
 }

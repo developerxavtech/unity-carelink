@@ -14,6 +14,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CalendarEventController;
 use App\Http\Controllers\FamilyMemberController;
 use App\Http\Controllers\DspOnboardingController;
+use App\Http\Controllers\Api\WaitlistRegistrationController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -21,6 +22,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+// Public join-waitlist registration (posted from the unitycarelink.com marketing site)
+Route::post('/api/register-join-waitlist', [WaitlistRegistrationController::class, 'store'])
+    ->name('api.waitlist.register');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
