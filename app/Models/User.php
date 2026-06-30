@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
+use Laravel\Passport\Contracts\OAuthenticatable;
+use Laravel\Passport\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements OAuthenticatable
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -70,11 +70,12 @@ class User extends Authenticatable
      */
     public function getFullStatusAttribute(): string
     {
-        if (!$this->activity_status) {
+        if (! $this->activity_status) {
             return 'Available';
         }
 
         $emoji = $this->status_emoji ? "{$this->status_emoji} " : '';
+
         return "{$emoji}{$this->activity_status}";
     }
 
@@ -109,7 +110,7 @@ class User extends Authenticatable
      */
     public function accessibleIndividualProfiles()
     {
-        // Without teams, family admin sees their own. 
+        // Without teams, family admin sees their own.
         // DSPs/Staff might need a new assignment system, but for now we see all or none.
         if ($this->hasAnyRole(['family_admin', 'family_member'])) {
             return $this->individualProfiles();
