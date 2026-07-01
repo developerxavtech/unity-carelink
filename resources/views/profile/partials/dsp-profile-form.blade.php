@@ -191,7 +191,7 @@
 
                 <div class="flex flex-wrap gap-6 p-4 bg-gray-50 rounded border border-gray-200">
                     <div class="flex items-center">
-                        <input type="checkbox" name="communication_preferences[]" value="In-app messaging"
+                    <input type="checkbox" name="communication_preferences[]" value="In-app messaging"
                             id="comm_app"
                             class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
                             {{ in_array('In-app messaging', $commPrefs) ? 'checked' : '' }}>

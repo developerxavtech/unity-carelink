@@ -7,10 +7,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\Contracts\OAuthenticatable;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements OAuthenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -170,12 +171,9 @@ class User extends Authenticatable implements OAuthenticatable
         return $query->where('status', 'active');
     }
 
-    /**
-     * Scope to get users by role type.
-     */
-    public function scopeWithRole($query, string $roleType)
+    public function getRoleAttribute()
     {
-        return $query->role($roleType);
+        return $this->getRoleNames()?->first();
     }
 
     /**

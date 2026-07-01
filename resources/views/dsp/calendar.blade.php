@@ -74,8 +74,8 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="eventColor" class="form-label">Color</label>
-                                <input type="color" class="form-control form-control-color" id="eventColor"
-                                    name="color" value="#3788d8">
+                                <input type="color" class="form-control form-control-color" id="eventColor" name="color"
+                                    value="#3788d8">
                             </div>
                         </div>
 
@@ -123,7 +123,7 @@
         <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5@6.1.10/index.global.min.js"></script>
 
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 const calendarEl = document.getElementById('calendar');
                 const eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
                 const eventForm = document.getElementById('eventForm');
@@ -143,14 +143,14 @@
                     selectMirror: true,
                     dayMaxEvents: true,
                     weekends: true,
-                    events: function(info, successCallback, failureCallback) {
-                        // Fetch events from API
+                    events: function (info, successCallback, failureCallback) {
+                        console.log(info)
                         fetch(`/calendar-events?start=${info.startStr}&end=${info.endStr}`, {
-                                headers: {
-                                    'X-Requested-With': 'XMLHttpRequest',
-                                    'Accept': 'application/json'
-                                }
-                            })
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            }
+                        })
                             .then(response => response.json())
                             .then(data => successCallback(data))
                             .catch(error => {
@@ -158,20 +158,20 @@
                                 failureCallback(error);
                             });
                     },
-                    select: function(info) {
+                    select: function (info) {
                         // Open modal for new event
                         openEventModal(null, info.startStr, info.endStr);
                         calendar.unselect();
                     },
-                    eventClick: function(info) {
+                    eventClick: function (info) {
                         // Open modal for editing event
                         openEventModal(info.event);
                     },
-                    eventDrop: function(info) {
+                    eventDrop: function (info) {
                         // Update event when dragged
                         updateEvent(info.event);
                     },
-                    eventResize: function(info) {
+                    eventResize: function (info) {
                         // Update event when resized
                         updateEvent(info.event);
                     }
@@ -180,17 +180,17 @@
                 calendar.render();
 
                 // Add Event Button
-                document.getElementById('addEventBtn').addEventListener('click', function() {
+                document.getElementById('addEventBtn').addEventListener('click', function () {
                     openEventModal();
                 });
 
                 // Save Event Button
-                document.getElementById('saveEventBtn').addEventListener('click', function() {
+                document.getElementById('saveEventBtn').addEventListener('click', function () {
                     saveEvent();
                 });
 
                 // Delete Event Button
-                document.getElementById('deleteEventBtn').addEventListener('click', function() {
+                document.getElementById('deleteEventBtn').addEventListener('click', function () {
                     if (confirm('Are you sure you want to delete this event?')) {
                         deleteEvent();
                     }
@@ -250,14 +250,14 @@
                     });
 
                     fetch(url, {
-                            method: method,
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                'X-Requested-With': 'XMLHttpRequest'
-                            },
-                            body: JSON.stringify(data)
-                        })
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify(data)
+                    })
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
@@ -281,14 +281,14 @@
                     };
 
                     fetch(`/calendar-events/${event.id}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                'X-Requested-With': 'XMLHttpRequest'
-                            },
-                            body: JSON.stringify(data)
-                        })
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify(data)
+                    })
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
@@ -306,12 +306,12 @@
                     const eventId = document.getElementById('eventId').value;
 
                     fetch(`/calendar-events/${eventId}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        })
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
@@ -342,9 +342,9 @@
                         `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
                     alertDiv.style.zIndex = '9999';
                     alertDiv.innerHTML = `
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                `;
+                                    ${message}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                `;
                     document.body.appendChild(alertDiv);
                     setTimeout(() => alertDiv.remove(), 3000);
                 }
