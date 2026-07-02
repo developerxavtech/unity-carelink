@@ -132,6 +132,16 @@ class User extends Authenticatable implements OAuthenticatable
     }
 
     /**
+     * Conversations this user participates in.
+     */
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class, 'conversation_participants')
+            ->withPivot('last_read_at')
+            ->withTimestamps();
+    }
+
+    /**
      * Messages sent by this user.
      */
     public function messages()

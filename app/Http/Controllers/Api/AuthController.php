@@ -265,10 +265,7 @@ class AuthController extends BaseController
         $user = Auth::user();
 
         if ($user) {
-            return $this->sendResponse(
-                new LoginResource($user),
-                'Profile retrieved successfully.'
-            );
+            return $user;
         }
 
         return $this->sendError('User not found.', [], 404);
