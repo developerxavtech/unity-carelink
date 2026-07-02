@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Events\MessageSent;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
@@ -107,10 +108,12 @@ class ChatController extends Controller
             // dd('Found existing conversation', $conversation->id);
         }
 
-        $conversation->messages()->create([
+        $message = $conversation->messages()->create([
             'user_id' => $authId,
             'content' => $validated['message'],
         ]);
+
+        event(new MessageSent($message));
 
         return redirect()->route('chat.show', $conversation);
     }
@@ -167,10 +170,16 @@ class ChatController extends Controller
             'content' => 'required|string',
         ]);
 
-        $conversation->messages()->create([
+        $message = $conversation->messages()->create([
             'user_id' => Auth::id(),
             'content' => $validated['content'],
         ]);
+
+        event(new MessageSent($message));
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
 
         return back();
     }

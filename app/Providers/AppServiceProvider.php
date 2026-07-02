@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,5 +25,13 @@ class AppServiceProvider extends ServiceProvider
             // We use a direct check here or a specific team check if needed
             return $user->hasRole('super_admin') ? true : null;
         });
+
+        // Mobile clients authenticate with Passport bearer tokens rather than the
+        // session cookie used by the web app, so they need their own channel
+        // authorization endpoint (POST /api/broadcasting/auth).
+        Broadcast::routes([
+            'prefix' => 'api',
+            'middleware' => ['auth:api'],
+        ]);
     }
 }

@@ -17,9 +17,10 @@
                 <div class="col-md-8">
                     <div class="card shadow-sm sm:rounded-lg overflow-hidden"
                         style="height: 600px; display: flex; flex-direction: column;">
-                        <div class="card-body overflow-auto flex-grow-1 p-4" id="message-container">
+                        <div class="card-body overflow-auto flex-grow-1 p-4" id="message-container"
+                            data-conversation-id="{{ $conversation->id }}" data-current-user-id="{{ Auth::id() }}">
                             @foreach ($messages as $message)
-                                <div
+                                <div data-message-id="{{ $message->id }}"
                                     class="mb-4 d-flex {{ $message->user_id === Auth::id() ? 'justify-content-end' : 'justify-content-start' }}">
                                     <div class="max-w-75">
                                         <div
@@ -37,10 +38,11 @@
                             @endforeach
                         </div>
                         <div class="card-footer bg-white p-3 border-top">
-                            <form action="{{ route('chat.messages.send', $conversation) }}" method="POST">
+                            <form id="chat-form" action="{{ route('chat.messages.send', $conversation) }}"
+                                method="POST">
                                 @csrf
                                 <div class="input-group">
-                                    <input type="text" name="content" class="form-control"
+                                    <input type="text" name="content" id="chat-message-input" class="form-control"
                                         placeholder="Type your message..." required autocomplete="off">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="bi bi-send"></i>
@@ -127,7 +129,90 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var container = document.getElementById('message-container');
+            var conversationId = container.dataset.conversationId;
+            var currentUserId = Number(container.dataset.currentUserId);
+            var form = document.getElementById('chat-form');
+            var input = document.getElementById('chat-message-input');
+
             container.scrollTop = container.scrollHeight;
+
+            function escapeHtml(value) {
+                var div = document.createElement('div');
+                div.textContent = value ?? '';
+                return div.innerHTML;
+            }
+
+            function formatTime(isoString) {
+                return new Date(isoString).toLocaleTimeString([], {
+                    hour: 'numeric',
+                    minute: '2-digit'
+                });
+            }
+
+            function appendMessage(message) {
+                if (container.querySelector('[data-message-id="' + message.id + '"]')) {
+                    return;
+                }
+
+                var isMine = Number(message.user.id) === currentUserId;
+                var firstName = (message.user.name || '').split(' ')[0];
+
+                var wrapper = document.createElement('div');
+                wrapper.dataset.messageId = message.id;
+                wrapper.className = 'mb-4 d-flex ' + (isMine ? 'justify-content-end' : 'justify-content-start');
+                wrapper.innerHTML =
+                    '<div class="max-w-75">' +
+                    '<div class="d-flex align-items-center mb-1 ' + (isMine ? 'flex-row-reverse' : '') + '">' +
+                    '<span class="fw-bold small px-2">' + escapeHtml(firstName) + '</span>' +
+                    '<small class="text-muted">' + formatTime(message.created_at) + '</small>' +
+                    '</div>' +
+                    '<div class="p-3 rounded-pill ' + (isMine ? 'bg-primary text-white shadow-sm' : 'bg-light border') + '">' +
+                    escapeHtml(message.content) +
+                    '</div>' +
+                    '</div>';
+
+                container.appendChild(wrapper);
+                container.scrollTop = container.scrollHeight;
+            }
+
+            if (window.Echo) {
+                window.Echo.private('conversation.' + conversationId)
+                    .listen('.message.sent', function(message) {
+                        appendMessage(message);
+                    });
+            }
+
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+
+                    var content = input.value.trim();
+                    if (!content) {
+                        return;
+                    }
+
+                    var submitButton = form.querySelector('button[type="submit"]');
+                    submitButton.disabled = true;
+
+                    window.axios.post(form.action, {
+                            content: content
+                        }, {
+                            headers: {
+                                Accept: 'application/json'
+                            }
+                        })
+                        .then(function() {
+                            input.value = '';
+                        })
+                        .catch(function() {
+                            alert('Could not send message. Please try again.');
+                        })
+                        .finally(function() {
+                            submitButton.disabled = false;
+                            input.focus();
+                        });
+                });
+            }
         });
     </script>
 </x-app-layout>

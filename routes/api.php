@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\DspController;
 use App\Http\Controllers\Api\StatusController;
 use Illuminate\Support\Facades\Route;
@@ -33,5 +34,14 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/', [StatusController::class, 'getCurrentStatus'])->name('current');
         Route::post('/update', [StatusController::class, 'updateStatus'])->name('update');
         Route::post('/clear', [StatusController::class, 'clearStatus'])->name('clear');
+    });
+
+    
+    Route::prefix('chat')->name('api.chat.')->group(function () {
+        Route::get('/', [ChatController::class, 'index'])->name('index');
+        Route::post('/', [ChatController::class, 'store'])->name('store');
+        Route::get('/{conversation}', [ChatController::class, 'show'])->name('show');
+        Route::post('/{conversation}/messages', [ChatController::class, 'sendMessage'])->name('messages.send');
+        Route::post('/{conversation}/participants', [ChatController::class, 'addParticipant'])->name('participants.add');
     });
 });
