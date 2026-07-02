@@ -58,7 +58,8 @@
 
                         <div class="mb-3">
                             <label for="status_message" class="form-label">Short Note (Optional)</label>
-                            <textarea name="status_message" id="status_message" class="form-control" rows="2">{{ old('status_message', $user->status_message) }}</textarea>
+                            <textarea name="status_message" id="status_message" class="form-control"
+                                rows="2">{{ old('status_message', $user->status_message) }}</textarea>
                         </div>
 
                         <div class="mb-4">
@@ -82,8 +83,7 @@
                         </div>
                     </form>
 
-                    <form id="clear-form" action="{{ route('dsp.status.clear') }}" method="POST"
-                        style="display: none;">
+                    <form id="clear-form" action="{{ route('dsp.status.clear') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
                 </div>

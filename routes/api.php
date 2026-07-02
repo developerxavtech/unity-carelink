@@ -19,7 +19,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('profile', [AuthController::class, 'getProfile']);
     Route::post('update-profile', [AuthController::class, 'updateProfile']);
 });
-
+Route::get('activity-statuses', [StatusController::class, 'getActivityStatuses']);
 Route::middleware('auth:api')->group(function () {
     Route::resource('appointments', AppointmentController::class);
 

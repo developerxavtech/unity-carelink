@@ -115,4 +115,25 @@ class StatusController extends BaseController
             return $this->sendError('Something went wrong.', ['error' => $e->getMessage()], 500);
         }
     }
+
+    // activity status
+    public function getActivityStatuses()
+    {
+        try {
+
+            return $this->sendResponse([
+                ['label' => 'Busy at the mall', 'emoji' => '🛍️'],
+                ['label' => 'Swimming', 'emoji' => '🏊'],
+                ['label' => 'At the gym', 'emoji' => '🏋️'],
+                ['label' => 'Driving', 'emoji' => '🚗'],
+                ['label' => 'Sleeping', 'emoji' => '😴'],
+                ['label' => 'In a meeting', 'emoji' => '🤝'],
+                ['label' => 'Out for lunch', 'emoji' => '🍴'],
+                ['label' => 'Shift active', 'emoji' => '📋'],
+                ['label' => 'On break', 'emoji' => '☕'],
+            ], 'Activity statuses retrieved successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError('Something went wrong.', ['error' => $e->getMessage()], 500);
+        }
+    }
 }
