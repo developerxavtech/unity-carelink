@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\LoginResource;
+use App\Http\Resources\ProfileResource;
 use App\Mail\DspVerifiedMail;
 use App\Models\User;
 use Exception;
@@ -262,13 +263,16 @@ class AuthController extends BaseController
      */
     public function getProfile(Request $request)
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        if ($user) {
-            return $user;
+            if (! $user) {
+                return $this->sendError('User not found.', [], 404);
+            }
+
+            return $this->sendResponse(new ProfileResource($user), 'Profile retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Something went wrong.', ['error' => $e->getMessage()], 500);
         }
-
-        return $this->sendError('User not found.', [], 404);
-
     }
 }
