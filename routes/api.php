@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\DailyLogController;
 use App\Http\Controllers\Api\DspController;
 use App\Http\Controllers\Api\StatusController;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,8 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('dsp')->name('api.dsp.')->group(function () {
         Route::get('clients', [DspController::class, 'clientsList'])->name('clients.index');
         Route::get('clients/search', [DspController::class, 'searchClients'])->name('clients.search');
+
+        Route::apiResource('daily-logs', DailyLogController::class);
     });
 
     // Status / Mood routes

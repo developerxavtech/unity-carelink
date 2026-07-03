@@ -1,0 +1,285 @@
+{
+	"info": {
+		"name": "Unity CareLink - Daily Logs API",
+		"description": "CRUD endpoints for DSP Daily Logs (backed by the CareNote model). Run \"Login\" first to auto-populate the {{token}} variable used by every other request.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "daily_log_id",
+			"value": "1",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login (get token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res && res.data && res.data.token) {",
+									"    pm.collectionVariables.set('token', res.data.token);",
+									"    console.log('Token saved:', res.data.token);",
+									"} else {",
+									"    console.warn('Login response did not contain data.token — check the response body and update this script if the field name differs.');",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "dsp@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login"]
+						},
+						"description": "Authenticates a DSP user and returns a Passport bearer token in data.token, which the test script saves to the {{token}} collection variable."
+					}
+				}
+			]
+		},
+		{
+			"name": "Daily Logs",
+			"item": [
+				{
+					"name": "List Daily Logs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/dsp/daily-logs?individual_id=1&start_date=2026-06-01&end_date=2026-07-03&per_page=15",
+							"host": ["{{base_url}}"],
+							"path": ["api", "dsp", "daily-logs"],
+							"query": [
+								{
+									"key": "individual_id",
+									"value": "1",
+									"description": "Optional: filter by individual profile id",
+									"disabled": true
+								},
+								{
+									"key": "start_date",
+									"value": "2026-06-01",
+									"description": "Optional: filter shift_date >= this date",
+									"disabled": true
+								},
+								{
+									"key": "end_date",
+									"value": "2026-07-03",
+									"description": "Optional: filter shift_date <= this date",
+									"disabled": true
+								},
+								{
+									"key": "per_page",
+									"value": "15",
+									"description": "Optional: pagination page size (default 15)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Returns the authenticated DSP's own daily logs, paginated."
+					}
+				},
+				{
+					"name": "Create Daily Log",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "individual_profile_id",
+									"value": "1",
+									"type": "text",
+									"description": "Required: id of an individual profile this DSP can access"
+								},
+								{
+									"key": "shift_date",
+									"value": "2026-07-03",
+									"type": "text",
+									"description": "Optional: defaults to today"
+								},
+								{
+									"key": "notes",
+									"value": "Had a great day, participated in all morning activities without prompting.",
+									"type": "text",
+									"description": "Required"
+								},
+								{
+									"key": "mood",
+									"value": "good",
+									"type": "text",
+									"description": "Optional: great|good|okay|concern"
+								},
+								{
+									"key": "activities",
+									"value": "Arts and crafts, short walk outside",
+									"type": "text"
+								},
+								{
+									"key": "meals",
+									"value": "Ate full breakfast and lunch",
+									"type": "text"
+								},
+								{
+									"key": "medications",
+									"value": "Morning medication given at 8:00 AM",
+									"type": "text"
+								},
+								{
+									"key": "incidents",
+									"value": "",
+									"type": "text",
+									"description": "Optional: leave blank if none"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/dsp/daily-logs",
+							"host": ["{{base_url}}"],
+							"path": ["api", "dsp", "daily-logs"]
+						}
+					}
+				},
+				{
+					"name": "Show Daily Log",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/dsp/daily-logs/{{daily_log_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "dsp", "daily-logs", "{{daily_log_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Daily Log",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "_method",
+									"value": "PUT",
+									"type": "text",
+									"description": "Laravel method spoofing — required because multipart/form-data bodies aren't parsed on native PUT requests"
+								},
+								{
+									"key": "notes",
+									"value": "Updated note: afternoon mood improved after lunch.",
+									"type": "text"
+								},
+								{
+									"key": "mood",
+									"value": "great",
+									"type": "text"
+								},
+								{
+									"key": "activities",
+									"value": "Board games in the afternoon",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/dsp/daily-logs/{{daily_log_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "dsp", "daily-logs", "{{daily_log_id}}"]
+						},
+						"description": "All fields are optional on update — only send what you want to change. Uses POST + _method=PUT spoofing so Postman's multipart form-data body is parsed correctly by Laravel."
+					}
+				},
+				{
+					"name": "Delete Daily Log",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/dsp/daily-logs/{{daily_log_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "dsp", "daily-logs", "{{daily_log_id}}"]
+						}
+					}
+				}
+			]
+		}
+	]
+}
