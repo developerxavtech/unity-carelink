@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\DailyLogController;
 use App\Http\Controllers\Api\DspController;
 use App\Http\Controllers\Api\StatusController;
+use App\Http\Controllers\Api\VoiceCornerController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(AuthController::class)->group(function () {
@@ -46,5 +47,13 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/{conversation}', [ChatController::class, 'show'])->name('show');
         Route::post('/{conversation}/messages', [ChatController::class, 'sendMessage'])->name('messages.send');
         Route::post('/{conversation}/participants', [ChatController::class, 'addParticipant'])->name('participants.add');
+    });
+
+    // Voice Corner - DSP-only community feed (real-time via Pusher private
+    // channel "voice-corner", events "post.created" and "reaction.updated")
+    Route::prefix('voice-corner')->name('api.voice-corner.')->group(function () {
+        Route::get('/', [VoiceCornerController::class, 'index'])->name('index');
+        Route::post('/', [VoiceCornerController::class, 'store'])->name('store');
+        Route::post('/{post}/reactions', [VoiceCornerController::class, 'react'])->name('reactions.react');
     });
 });

@@ -15,3 +15,9 @@ Broadcast::channel('conversation.{conversationId}', function ($user, int $conver
         ->whereHas('participants', fn ($q) => $q->where('user_id', $user->id))
         ->exists();
 });
+
+// Voice Corner is a DSP-only community feed — explicitly excludes
+// program_staff/coordinators and families, unlike the conversation channel above.
+Broadcast::channel('voice-corner', function ($user) {
+    return $user->hasRole('dsp');
+});

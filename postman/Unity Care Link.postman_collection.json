@@ -1,0 +1,1353 @@
+{
+  "info": {
+    "_postman_id": "3325e7a7-5016-4838-baf7-ca372f4f47a6",
+    "name": "Unity Care Link",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "8481567",
+    "_collection_link": "https://go.postman.co/collection/8481567-3325e7a7-5016-4838-baf7-ca372f4f47a6?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Appointment",
+      "item": [
+        {
+          "name": "Get all Appointments",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTlmMTVhNi03NjI0LTczYTAtYTNlOS00OTZhZTgxMjRjZjQiLCJqdGkiOiJhOTgyMTkxZjhmZTZiNzM5ODNiOTM1YjlkN2RmMTU0MjQ3N2M3N2Y2ZjdkNTk0NWM4Y2JhZDQ5MTA3NjMwMjMyNjM1NjJmY2EzMTI4YmZjMCIsImlhdCI6MTc4MzAzNTAxNC4yMjUyNTA5NTkzOTYzNjIzMDQ2ODc1LCJuYmYiOjE3ODMwMzUwMTQuMjI1MjU1OTY2MTg2NTIzNDM3NSwiZXhwIjoxODE0NTcxMDE0LjIxNTcyNTg5ODc0MjY3NTc4MTI1LCJzdWIiOiIyIiwic2NvcGVzIjpbXX0.eWAnwb0TbPuTRjPkldmqIOH7QackKAgd6wNpyj977YjjGXW_M-ZgvJla4VTlnYC7TlxZ1uGDoXPJ7QYMF5a0TOyL07mPN46XiqT-GZnydijtkgKNHC3LTkOiFuzZmhZQKMI2CanK6-b_MtPdevkQ_gUl1rk8uHO3zerSji3l2ppYD5M3mXvnVodmuuGarEkhy7Xwu_d60u_kv1Q9uO3v3uC88IfOgHHoRqjGWr4gxWIuB8P-I5luVOxXDyYr2IL5BLy0bZeiUrXu-HlR24z8mCYCxJBSVH0lA5CbqQ_lwAn0J0VLdk3CCkE5ZswlPAn2Bwv2v8CWYsTQut4m6PhWCyqq2dF8_ORW0L3BcDgindcslyuWRA9osMF8nCb45_gxPnDdUfjF3XaEbTDrOGpcMrUebXdSqV37eiYhzGsjIqQgnk2l44PHRubAh1-Zbh2KOXZIS0lb5I1EZnTroYSYVtUS9rZBA2xiLTV9uon9tMU6hN3TGOZNGfuqrgvX78NSwV175uzdH3dnULljGIergRWHW6BniC4Y9jjPSOu2l6jPHvNYIYfCuI5EVxpHH3txW1-NegYbomocwi_bR-WtYnALosTpJdp4IXVCjuDKGC-zTzizXXyTi7f2MAFEdfOneaAyJnYDUZXSmIIt8qyANJFldl7dD9XdxXRMcNpICgs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{$live}}/appointments",
+              "host": [
+                "{{$live}}"
+              ],
+              "path": [
+                "appointments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Schedule Appointment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Family#1 Therapy",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Initial meeting to disccuss problems of child",
+                  "type": "text"
+                },
+                {
+                  "key": "start_datetime",
+                  "value": "2026-07-10 10:00:00",
+                  "type": "text"
+                },
+                {
+                  "key": "end_datetime",
+                  "value": "2026-07-10 11:30:00",
+                  "type": "text"
+                },
+                {
+                  "key": "location",
+                  "value": "Location",
+                  "type": "text"
+                },
+                {
+                  "key": "event_type",
+                  "value": "meeting",
+                  "type": "text",
+                  "description": "meeting,appointment,reminder,other"
+                },
+                {
+                  "key": "color",
+                  "value": "#3498db",
+                  "type": "text"
+                },
+                {
+                  "key": "all_day",
+                  "value": "0",
+                  "type": "text"
+                },
+                {
+                  "key": "reminder_minutes",
+                  "value": "120",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/appointments",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "appointments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Appointment",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Family 31 Therapy",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Initial meeting to disccuss problems of child",
+                  "type": "text"
+                },
+                {
+                  "key": "start_datetime",
+                  "value": "2026-07-10 10:00:00",
+                  "type": "text"
+                },
+                {
+                  "key": "end_datetime",
+                  "value": "2026-07-10 11:30:00",
+                  "type": "text"
+                },
+                {
+                  "key": "location",
+                  "value": "Location",
+                  "type": "text"
+                },
+                {
+                  "key": "event_type",
+                  "value": "meeting",
+                  "type": "text",
+                  "description": "meeting,appointment,reminder,other"
+                },
+                {
+                  "key": "color",
+                  "value": "#3498db",
+                  "type": "text"
+                },
+                {
+                  "key": "all_day",
+                  "value": "0",
+                  "type": "text"
+                },
+                {
+                  "key": "reminder_minutes",
+                  "value": "120",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/appointments/3",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "appointments",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Clients",
+      "item": [
+        {
+          "name": "Get Client",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTlmMTVhNi03NjI0LTczYTAtYTNlOS00OTZhZTgxMjRjZjQiLCJqdGkiOiI5OTgyOGI0MmNjMDhhNzNiMWQzYjEwOTIyNDI4Mzc0NGEzMTQxMmJhODM4ZWY2MzM2ZGZjMWQ3ODkyYWFjMGY1MDI4YTFmMTc5NTYwNjMxNCIsImlhdCI6MTc4Mjk1MDYxOS44OTU2MDksIm5iZiI6MTc4Mjk1MDYxOS44OTU2MTIsImV4cCI6MTgxNDQ4NjYxOS44Mzg0NjksInN1YiI6IjIiLCJzY29wZXMiOltdfQ.fSo8agH9GW4GZS1E6DsGXbOjEDj__GI2AdDG86JmEqYu3YEG9ygkyQiblSn1SiweH1-rC79KunNbMi5qn-DecFhVw1uilJBupRQDxulG9rXSl3hR2nGLxTrKAHTa6mqRNYvOf_nPW8Db-rOWOSMpaMVa3Xtn7NvZt9MdET04UnRueDiSN5sgCefp4q5NnuVj_fnyvkuk4WLST8n7pfuX-Vq24_0d9bcVE4rTtUDtjbakeHYIxyF1UdA6MfGD1l80gljEn0OA_ZmOxhkZ8xYiHj4dxYOARYsyhXIyuGttEAWydhhiAOmHE7Kv-czHjHFilgvioVGLoO7wSEhaEm2RnpV8tLjrg7AMTIRsV7gAMtojTj9j48F3rRTQ7HZE3b01vrUq9-yvztQAnW82Q14l5ZPy6MfcEpWD0RSRdAczV84Iiax9ryLxew0lO98k2T_fjF2IaGBUeBTBvZyVHYpWN3z0uHLXrjYiESXO3jE7zLoc-PrO6D7YBoEy7FLD_GLKbyyisceI_zxcbI_CeGnrpHB0z8EJBtIMlpcBzu-Qxk5JooIlxCHmIPFbEaxwCCaBPioLKscs5v8afES2oxkYHLBHDJsiVbDYNLiti32Mszf1b0w-Y1uM2DsqqqSOVJCNxWYO5O4t1i5C4cIPsfKRWY9jnaOoIuQ0kPgu1yWeGJU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{$local}}/dsp/clients?page=1&per_page=15",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "dsp",
+                "clients"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "15"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Client",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{$local}}/dsp/clients/search?q=John&status=active&per_page=15",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "dsp",
+                "clients",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "John"
+                },
+                {
+                  "key": "status",
+                  "value": "active"
+                },
+                {
+                  "key": "per_page",
+                  "value": "15"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Mood",
+      "item": [
+        {
+          "name": "Get current mood/status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTlmMTVhNi03NjI0LTczYTAtYTNlOS00OTZhZTgxMjRjZjQiLCJqdGkiOiI5NjIxNjBkZjA4NjA5MTdkNTk1NDViY2FlOTY2M2E4ZTVlY2U0ZjE1OGEyZDM2Zjg2ODkyNzBmN2VjZTU1MDU1NDYxOGM3OTQ4YzdjMWNiNSIsImlhdCI6MTc4MzAyNDg0MS4wOTU5NTg5NDgxMzUzNzU5NzY1NjI1LCJuYmYiOjE3ODMwMjQ4NDEuMDk1OTYyMDQ3NTc2OTA0Mjk2ODc1LCJleHAiOjE4MTQ1NjA4NDEuMDg3MzkyMDkxNzUxMDk4NjMyODEyNSwic3ViIjoiMiIsInNjb3BlcyI6W119.GB0f1UaUvpdkViha_Z7qp7VWqg4r2UkpWJmcyJav_eA0u8Dbnu5X7tXOoda7BBMp71OWdRupUS6OGPM0ynDSUjKcgXps177STTEMLhPLQKN7YjPGJn7075vJ0FFz4ndEuZien10BOmTXYwRIoX8hVZNNgXOaJD9--nw_WZLQQvo6Lb5qwtQCROspW5qNoaU3EOjbXhnLTiNl946GWXnTCZsMoWWKGf5FE72Gre77ufsqGMWQoMOzNInVyIm3AZG9be3ZJuWAREv-Ppb6-OkFabBrTDumwT_PQbzxln_ZlWaBJtrdHjIhu8eAqFgu1ZOT2-g0T4t1gAuVlNjxbARME9IpJN2yl3yLkU_CfIWPxtFu1dE8uY_Rz1KypqlHT339X9mA-7SdsRQjMLdO3p-TKJlCAyceUfe6vIL83H-8woy9XEFcqyBV7MsyQyY9Eoc0JZSXj4MV1UUrYFN8gT4jB_nBugwh7acwASQkB66dLliawNk6yicAwhsRBAgGgKf0tkGjLH2IpDRJiAGKoXlN0bkHpXsiH_g9invJkZfK8VmAE_tKJvcmyCbXb9RZIOp9ciLIkAWNXiqTxF2v6NE-VhVAWRZ749p89Trg4V8ZCiweJrmTJep3T2eVFlVJB35qmwbkg4Rz_CufiHSZt3zTbc80XLaPK0FriyIbgz4NCsA",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{$live}}/status",
+              "host": [
+                "{{$live}}"
+              ],
+              "path": [
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update mood/status",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "activity_status",
+                  "value": " At the gym",
+                  "type": "text"
+                },
+                {
+                  "key": "status_emoji",
+                  "value": " 🏋️",
+                  "type": "text"
+                },
+                {
+                  "key": "status_message",
+                  "value": " Done by 5pm",
+                  "type": "text"
+                },
+                {
+                  "key": "status_busy_until",
+                  "value": " 2026-07-03T17:00:00",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$live}}/status/update",
+              "host": [
+                "{{$live}}"
+              ],
+              "path": [
+                "status",
+                "update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clear mood/status",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{$local}}/status/clear",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "status",
+                "clear"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Chat",
+      "item": [
+        {
+          "name": "List Conversations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/chat",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chat"
+              ]
+            },
+            "description": "Lists paginated conversations for the authenticated user (all conversations if the user has the program_staff role)."
+          },
+          "response": []
+        },
+        {
+          "name": "Start Conversation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res && res.data && res.data.id) {",
+                  "    pm.collectionVariables.set('conversation_id', res.data.id);",
+                  "    console.log('conversation_id saved:', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "user_id",
+                  "value": "18",
+                  "type": "text"
+                },
+                {
+                  "key": "subject",
+                  "value": "General",
+                  "type": "text"
+                },
+                {
+                  "key": "message",
+                  "value": "Hello!",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/chat",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "chat"
+              ]
+            },
+            "description": "Starts a new conversation with `user_id` (or reuses the existing 1:1 conversation) and sends the first message. Broadcasts `message.sent` on the `conversation.{id}` private channel. Set the `target_user_id` collection variable to another user's id before running."
+          },
+          "response": []
+        },
+        {
+          "name": "Show Conversation",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/chat/{{conversation_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chat",
+                "{{conversation_id}}"
+              ]
+            },
+            "description": "Returns conversation details, participants, and all messages."
+          },
+          "response": []
+        },
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"content\": \"This is a test message\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{$local}}/chat/10/messages",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "chat",
+                "10",
+                "messages"
+              ]
+            },
+            "description": "Sends a message in the conversation and broadcasts `message.sent` on the `conversation.{id}` private Pusher channel in real time."
+          },
+          "response": []
+        },
+        {
+          "name": "Add Participant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user_id\": {{target_user_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{$local}}/chat/10/participants",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "chat",
+                "10",
+                "participants"
+              ]
+            },
+            "description": "Adds a user to the conversation. family_member accounts are forbidden from adding participants."
+          },
+          "response": []
+        },
+        {
+          "name": "Broadcasting Auth (Pusher private channel)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "socket_id",
+                  "value": "",
+                  "description": "Socket ID from the Pusher JS/mobile SDK connection",
+                  "type": "text"
+                },
+                {
+                  "key": "channel_name",
+                  "value": "private-conversation.{{conversation_id}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/broadcasting/auth",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "broadcasting",
+                "auth"
+              ]
+            },
+            "description": "Mobile clients call this (with their Passport bearer token) to authorize subscribing to a `private-conversation.{id}` Pusher channel. `socket_id` comes from the connected Pusher client SDK; `channel_name` must be `private-conversation.{conversation_id}`."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Voice Corner",
+      "item": [
+        {
+          "name": "List Feed",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{$local}}/voice-corner",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "voice-corner"
+              ],
+              "query": [
+                {
+                  "key": "tag",
+                  "value": "win",
+                  "description": "Optional: win|vent|motivation|question",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "DSP-only community feed, most recent first. Requires the `dsp` role (403 otherwise). Each post includes reaction counts, `reacted_by_me`, `is_own`, and `author` (null when `is_anonymous` is true)."
+          },
+          "response": []
+        },
+        {
+          "name": "Share Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res && res.data && res.data.id) {",
+                  "    pm.collectionVariables.set('post_id', res.data.id);",
+                  "    console.log('post_id saved:', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "tag",
+                  "value": "win",
+                  "type": "text",
+                  "description": "win|vent|motivation|question"
+                },
+                {
+                  "key": "content",
+                  "value": "Marcus said my name unprompted today. Three months in. I almost cried. This is why we do it.",
+                  "type": "text"
+                },
+                {
+                  "key": "is_anonymous",
+                  "value": "0",
+                  "type": "text",
+                  "description": "1 to hide your identity from other DSPs"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/voice-corner",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "voice-corner"
+              ]
+            },
+            "description": "Shares a new post to the feed and broadcasts `post.created` on the `voice-corner` private Pusher channel."
+          },
+          "response": []
+        },
+        {
+          "name": "React to Post (as DSP 1 — collection token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "type",
+                  "value": "heart",
+                  "type": "text",
+                  "description": "heart|fire|clap — call again with the same type to remove your reaction"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/voice-corner/{{post_id}}/reactions",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "voice-corner",
+                "{{post_id}}",
+                "reactions"
+              ]
+            },
+            "description": "Toggles a reaction on the post for whichever DSP is authenticated by the collection's bearer token. Broadcasts `reaction.updated` (post_id + updated counts) on the `voice-corner` private channel.\n\nNote: calling this twice in a row with the SAME token toggles the reaction off again (like/unlike) — it will NOT increment the count a second time. To see the count go up, react as a DIFFERENT DSP account (see \"Login as DSP 2\" + \"React to Post (as DSP 2)\" below)."
+          },
+          "response": []
+        },
+        {
+          "name": "Login as DSP 2 (seeded test account)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res && res.data && res.data.token) {",
+                  "    pm.collectionVariables.set('dsp2_token', res.data.token);",
+                  "    console.log('dsp2_token saved');",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "email",
+                  "value": "dsp2@unitycarelink.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "password",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/login",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "Logs in as the second seeded DSP account (database/seeders/DatabaseSeeder.php) so you can react to the same post as a genuinely different user. Saves the token into `dsp2_token`."
+          },
+          "response": []
+        },
+        {
+          "name": "React to Post (as DSP 2)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{dsp2_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "type",
+                  "value": "heart",
+                  "type": "text",
+                  "description": "heart|fire|clap"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/voice-corner/{{post_id}}/reactions",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "voice-corner",
+                "{{post_id}}",
+                "reactions"
+              ]
+            },
+            "description": "Same endpoint as \"React to Post (as DSP 1)\" but authenticated as the second seeded DSP (via `dsp2_token` from \"Login as DSP 2\"). Run this after DSP 1 has reacted and you should see the `heart` count go from 1 to 2 in the response — proving reactions aggregate across different DSPs on the same post, not just one."
+          },
+          "response": []
+        },
+        {
+          "name": "Broadcasting Auth (Pusher private channel)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "socket_id",
+                  "value": "",
+                  "type": "text",
+                  "description": "Socket ID from the connected Pusher JS/mobile SDK"
+                },
+                {
+                  "key": "channel_name",
+                  "value": "private-voice-corner",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/broadcasting/auth",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "broadcasting",
+                "auth"
+              ]
+            },
+            "description": "Mobile clients call this (with their Passport bearer token) to authorize subscribing to the shared `private-voice-corner` Pusher channel. Only users with the `dsp` role are authorized."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Daily Logs",
+      "item": [
+        {
+          "name": "List Daily Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{$local}}/dsp/daily-logs",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "dsp",
+                "daily-logs"
+              ],
+              "query": [
+                {
+                  "key": "individual_id",
+                  "value": "1",
+                  "description": "Optional: filter by individual profile id",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "2026-06-01",
+                  "description": "Optional: filter shift_date >= this date",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2026-07-03",
+                  "description": "Optional: filter shift_date <= this date",
+                  "disabled": true
+                },
+                {
+                  "key": "per_page",
+                  "value": "15",
+                  "description": "Optional: pagination page size (default 15)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Returns the authenticated DSP's own daily logs, paginated."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Daily Log",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "individual_profile_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "Required: id of an individual profile this DSP can access"
+                },
+                {
+                  "key": "shift_date",
+                  "value": "2026-07-03",
+                  "type": "text",
+                  "description": "Optional: defaults to today"
+                },
+                {
+                  "key": "notes",
+                  "value": "Had a great day, participated in all morning activities without prompting.",
+                  "type": "text",
+                  "description": "Required"
+                },
+                {
+                  "key": "mood",
+                  "value": "good",
+                  "type": "text",
+                  "description": "Optional: great|good|okay|concern"
+                },
+                {
+                  "key": "activities",
+                  "value": "Arts and crafts, short walk outside",
+                  "type": "text"
+                },
+                {
+                  "key": "meals",
+                  "value": "Ate full breakfast and lunch",
+                  "type": "text"
+                },
+                {
+                  "key": "medications",
+                  "value": "Morning medication given at 8:00 AM",
+                  "type": "text"
+                },
+                {
+                  "key": "incidents",
+                  "value": "",
+                  "type": "text",
+                  "description": "Optional: leave blank if none"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/dsp/daily-logs",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "dsp",
+                "daily-logs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Show Daily Log",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{$local}}/api/dsp/daily-logs/1",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "api",
+                "dsp",
+                "daily-logs",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Daily Log",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PUT",
+                  "type": "text",
+                  "description": "Laravel method spoofing — required because multipart/form-data bodies aren't parsed on native PUT requests"
+                },
+                {
+                  "key": "notes",
+                  "value": "Updated note: afternoon mood improved after lunch.",
+                  "type": "text"
+                },
+                {
+                  "key": "mood",
+                  "value": "great",
+                  "type": "text"
+                },
+                {
+                  "key": "activities",
+                  "value": "Board games in the afternoon",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/api/dsp/daily-logs/1",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "api",
+                "dsp",
+                "daily-logs",
+                "1"
+              ]
+            },
+            "description": "All fields are optional on update — only send what you want to change. Uses POST + _method=PUT spoofing so Postman's multipart form-data body is parsed correctly by Laravel."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Daily Log",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{$local}}/api/dsp/daily-logs/1",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "api",
+                "dsp",
+                "daily-logs",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "email",
+              "value": "dsp@unitycarelink.com",
+              "type": "text",
+              "uuid": "64335c6d-3554-4cbc-899f-d56939e9c917"
+            },
+            {
+              "key": "password",
+              "value": "12345678",
+              "type": "text",
+              "uuid": "6378d76c-5566-4478-9a30-39040398e06e"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{$live}}/login",
+          "host": [
+            "{{$live}}"
+          ],
+          "path": [
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "name",
+              "value": "New Dsp ",
+              "type": "text",
+              "uuid": "066f2e0f-a1dc-4b07-af08-ac2f2a6cd449"
+            },
+            {
+              "key": "email",
+              "value": "newdsp6@mailinator.com",
+              "type": "text",
+              "uuid": "2ebe366f-3df1-4a8c-878b-52544e469b79"
+            },
+            {
+              "key": "phone",
+              "value": "123456789",
+              "type": "text",
+              "uuid": "f8177d5e-f226-4c4f-a7e0-31afa699ebe7"
+            },
+            {
+              "key": "password",
+              "value": "12345678",
+              "type": "text",
+              "uuid": "b4e048aa-fabf-42d3-a820-18f1eff42e29"
+            },
+            {
+              "key": "password_confirmation",
+              "value": "12345678",
+              "type": "text",
+              "uuid": "00ab2433-c6cd-485e-8c5c-318aa274d83f"
+            },
+            {
+              "key": "communication_preferences[0]",
+              "value": "In-app messaging",
+              "description": "In-app messaging,Phone,Email",
+              "type": "text",
+              "uuid": "567c9f65-7ea2-4a7d-b028-22b0fba2ad7f"
+            },
+            {
+              "key": "role",
+              "value": "dsp",
+              "description": "family_admin,family_member,dsp,agency_admin,program_staff",
+              "type": "text",
+              "uuid": "252cfb08-162d-4f13-89fe-bcd43f518e34"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{$live}}/register",
+          "host": [
+            "{{$live}}"
+          ],
+          "path": [
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Verify Code",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "email",
+              "value": "newdsp6@mailinator.com",
+              "type": "text",
+              "uuid": "a08a9df3-f2d6-41c2-bcde-e3f05243f501"
+            },
+            {
+              "key": "code",
+              "value": "422278",
+              "type": "text",
+              "uuid": "566f15bb-39d1-4ee7-bfcd-65881a5a57f1"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{$local}}/verify-code",
+          "host": [
+            "{{$local}}"
+          ],
+          "path": [
+            "verify-code"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Resend Code",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "email",
+              "value": "newdsp6@mailinator.com",
+              "type": "text",
+              "uuid": "0e03996c-32cc-43c7-88f1-5c5eec9bd7ef"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{$local}}/resend-code",
+          "host": [
+            "{{$local}}"
+          ],
+          "path": [
+            "resend-code"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Profile",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTlmMTVhNi03NjI0LTczYTAtYTNlOS00OTZhZTgxMjRjZjQiLCJqdGkiOiI2ZDljMmExYjRkNDdiMDk3ZmUwZmU4ODljNzRiODRlYzg1MDIwMzk1ZjIwMTVmY2VhMzdiMGY4Y2NlODMxMjE5ZWVmZTZmNTU3Mjc5ZWU2OSIsImlhdCI6MTc4MzAyMzc5Ny4xMTM3ODIsIm5iZiI6MTc4MzAyMzc5Ny4xMTM3ODcsImV4cCI6MTgxNDU1OTc5Ny4wNjc4MjksInN1YiI6IjIiLCJzY29wZXMiOltdfQ.Eaze07iLgz6GfQbdszdT_l7SDKo--WPayzxrWe9Ket4L5pqdHExu2vwOxa_ZpOnpUcdaQ1xgfRusD4j_ohcdzxwt2RBwRPlWcYwcx39t6ctV67uEFUyUzj0h6IURPWS2DxjBvHWEUPQrXQyekN35wkMAEn9Ix_4QMf7RfHV5uE0LyOP9ybjkz4IwKYGmH91D38T1JEcUzA_6FldebMU70uTq2X6qN1CTHK8Buq0ve3FnCcvbrG5aGQEWssq-pDTRXoLCZtl1h03V1mAy3LdjMbn-K5A7bdkHEAKMc9Cjba1wLgd7cKMaXKji_e9SpJ_OAgKMXSML-In-ym2NrfoJADu1txPDhZ1PA014JozOtgy9OH_KnJ82vgO7VCigFdBVwIfRwiPxIOvKox7MigC7jWqcvg4RPhCxRXp1sVDf_UJX6mWm2Byg8-bavpn-n6KcK7c_uzVFlCHlBsQxui285HK7AnzybpVSgjWT2QgrxNb0jI58kK-CFDMEaF1Zd-UumocdacyQYEq8pABRyhSFElNfeEFiIifcwagAYqN7_6XpV1NrbvKJCSG_U9Bj0lbyPnDedrULUtjJwyMNja_KbAqz0-9B3eqk88_1LXqmLZoUA1QUv2bfHs9oblTfPsIh88ufrFQ54SYvi0NYU-JQc30Zts8j8YIRx01WT32ZHzU",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{$local}}/profile",
+          "host": [
+            "{{$local}}"
+          ],
+          "path": [
+            "profile"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Activity Statuses",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{$local}}/activity-statuses",
+          "host": [
+            "{{$local}}"
+          ],
+          "path": [
+            "activity-statuses"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTlmMTVhNi03NjI0LTczYTAtYTNlOS00OTZhZTgxMjRjZjQiLCJqdGkiOiI2ZDljMmExYjRkNDdiMDk3ZmUwZmU4ODljNzRiODRlYzg1MDIwMzk1ZjIwMTVmY2VhMzdiMGY4Y2NlODMxMjE5ZWVmZTZmNTU3Mjc5ZWU2OSIsImlhdCI6MTc4MzAyMzc5Ny4xMTM3ODIsIm5iZiI6MTc4MzAyMzc5Ny4xMTM3ODcsImV4cCI6MTgxNDU1OTc5Ny4wNjc4MjksInN1YiI6IjIiLCJzY29wZXMiOltdfQ.Eaze07iLgz6GfQbdszdT_l7SDKo--WPayzxrWe9Ket4L5pqdHExu2vwOxa_ZpOnpUcdaQ1xgfRusD4j_ohcdzxwt2RBwRPlWcYwcx39t6ctV67uEFUyUzj0h6IURPWS2DxjBvHWEUPQrXQyekN35wkMAEn9Ix_4QMf7RfHV5uE0LyOP9ybjkz4IwKYGmH91D38T1JEcUzA_6FldebMU70uTq2X6qN1CTHK8Buq0ve3FnCcvbrG5aGQEWssq-pDTRXoLCZtl1h03V1mAy3LdjMbn-K5A7bdkHEAKMc9Cjba1wLgd7cKMaXKji_e9SpJ_OAgKMXSML-In-ym2NrfoJADu1txPDhZ1PA014JozOtgy9OH_KnJ82vgO7VCigFdBVwIfRwiPxIOvKox7MigC7jWqcvg4RPhCxRXp1sVDf_UJX6mWm2Byg8-bavpn-n6KcK7c_uzVFlCHlBsQxui285HK7AnzybpVSgjWT2QgrxNb0jI58kK-CFDMEaF1Zd-UumocdacyQYEq8pABRyhSFElNfeEFiIifcwagAYqN7_6XpV1NrbvKJCSG_U9Bj0lbyPnDedrULUtjJwyMNja_KbAqz0-9B3eqk88_1LXqmLZoUA1QUv2bfHs9oblTfPsIh88ufrFQ54SYvi0NYU-JQc30Zts8j8YIRx01WT32ZHzU",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "$local",
+      "value": ""
+    },
+    {
+      "key": "$live",
+      "value": ""
+    },
+    {
+      "key": "conversation_id",
+      "value": ""
+    },
+    {
+      "key": "post_id",
+      "value": ""
+    },
+    {
+      "key": "dsp2_token",
+      "value": ""
+    }
+  ]
+}
