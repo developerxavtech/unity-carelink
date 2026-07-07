@@ -107,6 +107,16 @@ class AuthController extends BaseController
                     return $this->sendError('Something went wrong.', ['error' => $e->getMessage()], 500);
                 }
 
+            } elseif ($user->hasRole('family_member')) {
+                $request->validate([
+                    'family_admin_id' => 'required|exists:users,id',
+                ]);
+
+                $user->update([
+                    'family_admin_id' => $request->family_admin_id,
+                    'first_name' => $request->first_name ?? $user->first_name,
+                    'last_name' => $request->last_name ?? $user->last_name,
+                ]);
             }
             DB::commit();
             Auth::login($user);
