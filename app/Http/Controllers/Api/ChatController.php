@@ -11,6 +11,30 @@ use Illuminate\Support\Facades\Auth;
 
 class ChatController extends BaseController
 {
+    public function contactList(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $relevantUsers = collect();
+
+            if ($user->hasRole('family_admin')) {
+                // Families can start chats with other family members and assigned DSPs
+                $relevantUsers = User::role('family_admin')
+                    ->where('id', '!=', $user->id)
+                    ->get()
+                    ->concat(User::role('family_member')->where('family_admin_id', $user->id)->get())
+                    ->concat(User::role('dsp')->get());
+            } elseif ($user->hasRole('dsp')) {
+                // DSPs can only start chats with other DSPs
+                $relevantUsers = User::role('dsp')->where('id', '!=', $user->id)->get();
+            }
+
+            return $this->sendResponse($relevantUsers, 'Contact list fetched successfully');
+        } catch (Exception $e) {
+            return $this->sendError('Failed to fetch contact list', ['error' => $e->getMessage()], 500);
+        }
+    }
+
     /**
      * List conversations for the authenticated user.
      */

@@ -1,11 +1,11 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Events\MessageSent;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
-use App\Models\IndividualProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,7 +25,7 @@ class ChatController extends Controller
                 'participants',
                 'messages' => function ($q) {
                     $q->latest()->limit(1);
-                }
+                },
             ])->latest()->paginate(20);
         } else {
             $conversations = Conversation::forUser($user->id)
@@ -33,14 +33,15 @@ class ChatController extends Controller
                     'participants',
                     'messages' => function ($q) {
                         $q->latest()->limit(1);
-                    }
+                    },
                 ])->latest()->paginate(20);
 
             $conversations->getCollection()->transform(function ($conversation) use ($user) {
                 $conversation->receiver = $conversation->participants
                     ->where('id', '!=', $user->id)
-                    ->map(fn($u) => $u->first_name . ' ' . $u->last_name)
+                    ->map(fn ($u) => $u->first_name.' '.$u->last_name)
                     ->implode(', ');
+
                 return $conversation;
             });
         }
@@ -61,7 +62,7 @@ class ChatController extends Controller
             $relevantUsers = User::role('family_admin')
                 ->where('id', '!=', $user->id)
                 ->get()
-                ->concat(User::role('family_member')->get())
+                ->concat(User::role('family_member')->where('family_admin_id', $user->id)->get())
                 ->concat(User::role('dsp')->get());
         } elseif ($user->hasRole('dsp')) {
             // DSPs can only start chats with other DSPs
@@ -96,7 +97,7 @@ class ChatController extends Controller
             })
             ->first();
 
-        if (!$conversation) {
+        if (! $conversation) {
             $conversation = Conversation::create([
                 'subject' => $validated['subject'],
                 'type' => 'general',
@@ -126,7 +127,7 @@ class ChatController extends Controller
         $user = Auth::user();
 
         // Access control
-        if (!$user->hasRole('program_staff') && !$conversation->participants()->where('user_id', $user->id)->exists()) {
+        if (! $user->hasRole('program_staff') && ! $conversation->participants()->where('user_id', $user->id)->exists()) {
             abort(403);
         }
 

@@ -32,6 +32,7 @@ Route::middleware('auth:api')->group(function () {
 
         Route::apiResource('daily-logs', DailyLogController::class);
     });
+    Route::prefix('family')->name('api.family.')->group(function () {});
 
     // Status / Mood routes
     Route::prefix('status')->name('api.status.')->group(function () {
@@ -40,8 +41,9 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/clear', [StatusController::class, 'clearStatus'])->name('clear');
     });
 
-    
     Route::prefix('chat')->name('api.chat.')->group(function () {
+        Route::get('contact-list', [ChatController::class, 'contactList']);
+
         Route::get('/', [ChatController::class, 'index'])->name('index');
         Route::post('/', [ChatController::class, 'store'])->name('store');
         Route::get('/{conversation}', [ChatController::class, 'show'])->name('show');

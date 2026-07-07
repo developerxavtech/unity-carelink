@@ -1,23 +1,21 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FamilyDashboardController;
-use App\Http\Controllers\DspDashboardController;
-use App\Http\Controllers\ProgramDashboardController;
 use App\Http\Controllers\AgencyDashboardController;
-use App\Http\Controllers\IndividualProfileController;
-use App\Http\Controllers\CareNoteController;
-use App\Http\Controllers\MoodCheckController;
-use App\Http\Controllers\UserStatusController;
-use App\Http\Controllers\ChatController;
-use App\Http\Controllers\CalendarEventController;
-use App\Http\Controllers\FamilyMemberController;
-use App\Http\Controllers\DspOnboardingController;
 use App\Http\Controllers\Api\WaitlistRegistrationController;
+use App\Http\Controllers\CalendarEventController;
+use App\Http\Controllers\CareNoteController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DspDashboardController;
+use App\Http\Controllers\DspOnboardingController;
+use App\Http\Controllers\FamilyDashboardController;
+use App\Http\Controllers\FamilyMemberController;
+use App\Http\Controllers\IndividualProfileController;
+use App\Http\Controllers\MoodCheckController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProgramDashboardController;
+use App\Http\Controllers\UserStatusController;
 use Illuminate\Support\Facades\Route;
-
-
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -61,7 +59,6 @@ Route::middleware(['auth', 'verified'])->prefix('chat')->name('chat.')->group(fu
     Route::post('/{conversation}/messages', [ChatController::class, 'sendMessage'])->name('messages.send');
     Route::post('/{conversation}/participants', [ChatController::class, 'addParticipant'])->name('participants.add');
 });
-
 
 // DSP Dashboard Routes
 Route::middleware(['auth', 'verified'])->prefix('dsp')->name('dsp.')->group(function () {
@@ -133,4 +130,4 @@ Route::middleware('auth')->group(function () {
     Route::resource('calendar-events', CalendarEventController::class)->except(['create', 'edit']);
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
