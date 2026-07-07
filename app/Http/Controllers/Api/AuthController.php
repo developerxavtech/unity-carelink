@@ -116,6 +116,7 @@ class AuthController extends BaseController
                     'family_admin_id' => $request->family_admin_id,
                     'first_name' => $request->first_name ?? $user->first_name,
                     'last_name' => $request->last_name ?? $user->last_name,
+
                 ]);
             }
             DB::commit();

@@ -103,6 +103,32 @@
                                     My Loved Ones
                                 </a>
                             </li>
+                        @elseif(auth()->user()->hasRole('family_member'))
+                            <li class="nav-item">
+                                <hr class="text-black-50 mx-3">
+                                <small class="text-black-50 px-3">FAMILY MEMBER DASHBOARD</small>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('family.home') ? 'active' : '' }}"
+                                    href="{{ route('family.home') }}">
+                                    <i class="bi bi-house-door"></i>
+                                    Home
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('family.calendar') ? 'active' : '' }}"
+                                    href="{{ route('family.calendar') }}">
+                                    <i class="bi bi-calendar3"></i>
+                                    Calendar
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('family.messages*') ? 'active' : '' }}"
+                                    href="{{ route('family.messages') }}">
+                                    <i class="bi bi-chat-dots"></i>
+                                    Messages
+                                </a>
+                            </li>
                         @elseif(auth()->user()->hasRole('dsp') && auth()->user()->isDspVerified())
                             @php
                                 $isVerified = auth()->user()->isDspVerified();

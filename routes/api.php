@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\DailyLogController;
 use App\Http\Controllers\Api\DspController;
+use App\Http\Controllers\Api\FamilyController;
 use App\Http\Controllers\Api\StatusController;
 use App\Http\Controllers\Api\VoiceCornerController;
 use Illuminate\Support\Facades\Route;
@@ -32,7 +33,10 @@ Route::middleware('auth:api')->group(function () {
 
         Route::apiResource('daily-logs', DailyLogController::class);
     });
-    Route::prefix('family')->name('api.family.')->group(function () {});
+    Route::prefix('family')->name('api.family.')->group(function () {
+        Route::get('members', [FamilyController::class, 'members']);
+
+    });
 
     // Status / Mood routes
     Route::prefix('status')->name('api.status.')->group(function () {
