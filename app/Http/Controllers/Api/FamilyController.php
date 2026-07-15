@@ -44,4 +44,48 @@ class FamilyController extends BaseController
             return $this->errorResponse('Error fetching family members', $e->getMessage());
         }
     }
+
+    public function getDspDetails(Request $request, $id)
+    {
+        try {
+            $dsp = User::role('dsp')->with('dspProfile')->findOrFail($id);
+
+            return $this->sendResponse('DSP Details', $dsp);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error fetching DSP details', $e->getMessage());
+        }
+    }
+
+    public function assignedDsps(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            // Get conversation IDs where the current user is a participant
+            $conversationIds = $user->conversations()->pluck('conversations.id');
+
+            // Find DSPs who share these conversations
+            $dsps = User::role('dsp')
+                ->whereHas('conversations', function ($query) use ($conversationIds) {
+                    $query->whereIn('conversations.id', $conversationIds);
+                })
+                ->with('dspProfile')
+                ->get();
+
+            return $this->sendResponse('Assigned DSPs', $dsps);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error fetching assigned DSPs', $e->getMessage());
+        }
+    }
+
+    public function dspList(Request $request)
+    {
+        try {
+            $dsps = User::role('dsp')->with('dspProfile')->get();
+
+            return $this->sendResponse('DSP List', $dsps);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error fetching DSP list', $e->getMessage());
+        }
+    }
 }

@@ -99,7 +99,6 @@ Route::middleware(['auth', 'verified'])->prefix('program')->name('program.')->gr
     Route::get('/messages/{conversation}', [ProgramDashboardController::class, 'conversation'])->name('messages.show');
 });
 
-// Agency Dashboard Routes
 Route::middleware(['auth', 'verified'])->prefix('agency')->name('agency.')->group(function () {
     Route::get('/home', [AgencyDashboardController::class, 'home'])->name('home');
     Route::get('/staffing', [AgencyDashboardController::class, 'staffing'])->name('staffing');
