@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\DspController;
 use App\Http\Controllers\Api\FamilyController;
 use App\Http\Controllers\Api\StatusController;
 use App\Http\Controllers\Api\VoiceCornerController;
+use App\Http\Controllers\Api\TodoNoteController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(AuthController::class)->group(function () {
@@ -26,6 +27,7 @@ Route::middleware('auth:api')->group(function () {
 Route::get('activity-statuses', [StatusController::class, 'getActivityStatuses']);
 Route::middleware('auth:api')->group(function () {
     Route::resource('appointments', AppointmentController::class);
+    Route::resource('todo-notes', TodoNoteController::class);
 
     Route::prefix('dsp')->name('api.dsp.')->group(function () {
         Route::get('clients', [DspController::class, 'clientsList'])->name('clients.index');
