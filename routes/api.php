@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\DailyLogController;
+use App\Http\Controllers\Api\DspCertificationController;
 use App\Http\Controllers\Api\DspController;
 use App\Http\Controllers\Api\FamilyController;
 use App\Http\Controllers\Api\StatusController;
@@ -32,8 +33,10 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('dsp')->name('api.dsp.')->group(function () {
         Route::get('clients', [DspController::class, 'clientsList'])->name('clients.index');
         Route::get('clients/search', [DspController::class, 'searchClients'])->name('clients.search');
+        Route::get('profile', [DspController::class, 'profile'])->name('profile');
 
         Route::apiResource('daily-logs', DailyLogController::class);
+        Route::apiResource('certifications', DspCertificationController::class);
     });
     Route::prefix('family')->name('api.family.')->group(function () {
         Route::get('members', [FamilyController::class, 'members']);

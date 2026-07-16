@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "3325e7a7-5016-4838-baf7-ca372f4f47a6",
+    "_postman_id": "70902231-da8e-42cf-afb0-627819c8a2f5",
     "name": "Unity Care Link",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "8481567",
-    "_collection_link": "https://go.postman.co/collection/8481567-3325e7a7-5016-4838-baf7-ca372f4f47a6?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/8481567-70902231-da8e-42cf-afb0-627819c8a2f5?source=collection_link"
   },
   "item": [
     {
@@ -195,9 +195,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{$local}}/dsp/clients?page=1&per_page=15",
+              "raw": "{{$live}}/dsp/clients?page=1&per_page=15",
               "host": [
-                "{{$local}}"
+                "{{$live}}"
               ],
               "path": [
                 "dsp",
@@ -578,6 +578,24 @@
             "description": "Mobile clients call this (with their Passport bearer token) to authorize subscribing to a `private-conversation.{id}` Pusher channel. `socket_id` comes from the connected Pusher client SDK; `channel_name` must be `private-conversation.{conversation_id}`."
           },
           "response": []
+        },
+        {
+          "name": "Contact List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{$live}}/chat/contact-list",
+              "host": [
+                "{{$live}}"
+              ],
+              "path": [
+                "chat",
+                "contact-list"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -714,105 +732,6 @@
           "response": []
         },
         {
-          "name": "Login as DSP 2 (seeded test account)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const res = pm.response.json();",
-                  "if (res && res.data && res.data.token) {",
-                  "    pm.collectionVariables.set('dsp2_token', res.data.token);",
-                  "    console.log('dsp2_token saved');",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "email",
-                  "value": "dsp2@unitycarelink.com",
-                  "type": "text"
-                },
-                {
-                  "key": "password",
-                  "value": "password",
-                  "type": "text"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{$local}}/login",
-              "host": [
-                "{{$local}}"
-              ],
-              "path": [
-                "login"
-              ]
-            },
-            "description": "Logs in as the second seeded DSP account (database/seeders/DatabaseSeeder.php) so you can react to the same post as a genuinely different user. Saves the token into `dsp2_token`."
-          },
-          "response": []
-        },
-        {
-          "name": "React to Post (as DSP 2)",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{dsp2_token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "type",
-                  "value": "heart",
-                  "type": "text",
-                  "description": "heart|fire|clap"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{$local}}/voice-corner/{{post_id}}/reactions",
-              "host": [
-                "{{$local}}"
-              ],
-              "path": [
-                "voice-corner",
-                "{{post_id}}",
-                "reactions"
-              ]
-            },
-            "description": "Same endpoint as \"React to Post (as DSP 1)\" but authenticated as the second seeded DSP (via `dsp2_token` from \"Login as DSP 2\"). Run this after DSP 1 has reacted and you should see the `heart` count go from 1 to 2 in the response — proving reactions aggregate across different DSPs on the same post, not just one."
-          },
-          "response": []
-        },
-        {
           "name": "Broadcasting Auth (Pusher private channel)",
           "request": {
             "method": "POST",
@@ -922,9 +841,9 @@
               "formdata": [
                 {
                   "key": "user_id",
-                  "value": "1",
+                  "value": "18",
                   "type": "text",
-                  "description": "Required: user id of a family_admin assigned to this DSP (i.e. sharing a conversation with them) — see GET /dsp/clients for the list. The log is filed directly against this family admin (not an individual profile) and the family admin can view it via GET /family/daily-logs."
+                  "description": "Required: user id of a family_admin assigned to this DSP (i.e. sharing a conversation with them) — see GET /dsp/clients for the list"
                 },
                 {
                   "key": "shift_date",
@@ -991,15 +910,14 @@
               }
             ],
             "url": {
-              "raw": "{{$local}}/api/dsp/daily-logs/1",
+              "raw": "{{$local}}/dsp/daily-logs/4",
               "host": [
                 "{{$local}}"
               ],
               "path": [
-                "api",
                 "dsp",
                 "daily-logs",
-                "1"
+                "4"
               ]
             }
           },
@@ -1081,9 +999,14 @@
             }
           },
           "response": []
-        },
+        }
+      ]
+    },
+    {
+      "name": "DSP Profile",
+      "item": [
         {
-          "name": "Get Daily Logs (Family)",
+          "name": "Get DSP Profile",
           "request": {
             "method": "GET",
             "header": [
@@ -1093,6 +1016,274 @@
               }
             ],
             "url": {
+              "raw": "{{$local}}/dsp/profile",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "dsp",
+                "profile"
+              ]
+            },
+            "description": "Profile screen for the authenticated DSP: identity (name, role, profile_photo, status), this_week (shifts_logged = count of appointment-type calendar events this week, hours = their total duration), certifications, and assigned_clients (same list as GET /dsp/clients)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Certifications",
+      "item": [
+        {
+          "name": "List Certifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{$local}}/dsp/certifications",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "dsp",
+                "certifications"
+              ]
+            },
+            "description": "Lists the authenticated DSP's certifications. Each entry includes `status` (current|expiring_soon|expired) and `status_label` (e.g. \"Current\" or \"Expires Jun 2026\")."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Certification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Crisis Prevention (CPI)",
+                  "type": "text"
+                },
+                {
+                  "key": "expires_at",
+                  "value": "2026-06-30",
+                  "type": "text",
+                  "description": "Optional: leave blank for certifications that don't expire"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/dsp/certifications",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "dsp",
+                "certifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Show Certification",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{$local}}/dsp/certifications/1",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "dsp",
+                "certifications",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Certification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PUT",
+                  "type": "text",
+                  "description": "Laravel method spoofing — required because multipart/form-data bodies aren't parsed on native PUT requests"
+                },
+                {
+                  "key": "name",
+                  "value": "Crisis Prevention (CPI)",
+                  "type": "text"
+                },
+                {
+                  "key": "expires_at",
+                  "value": "2027-06-30",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/dsp/certifications/1",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "dsp",
+                "certifications",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Certification",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{$local}}/dsp/certifications/1",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "dsp",
+                "certifications",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Family",
+      "item": [
+        {
+          "name": "Members",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwMTlmMTVhNi03NjI0LTczYTAtYTNlOS00OTZhZTgxMjRjZjQiLCJqdGkiOiIzMGJiYjYxZmQ1ZDk0ZDk1MjYxN2E2MGExNGE5ZmE5M2NjMjZiZDBjNTVkZTI4ZWNkYWU1M2Y3N2EyOGQ3N2FmNTliNzE5ZTdkMjk0ZTEzZCIsImlhdCI6MTc4NDE2MTcxNS40NTQzMTcsIm5iZiI6MTc4NDE2MTcxNS40NTQzMiwiZXhwIjoxODE1Njk3NzE1LjQ0NDMzNCwic3ViIjoiMSIsInNjb3BlcyI6W119.oZlGw6TpUdbS1EPlVwZZ-KsPn4leQoP6DG0xgqbHTrX2OaBgm94ZKS-oK0f0zxRMQnRUNxyQs56LGY6uueTbUx-QGP5bD-bTTLcPgpoDJc23IfomfU1m_Ni-dKUjwVTCW8LiMrONvOXHYzoKEui6W280YUnxFbhCo2ERmh2FhL8s_Fb2fpDxwew8XdWL5YplSuXDKtNyCMkEfKY5LS-ZPaWK4DQl7m5QD_XMCydUwkQe9bf4mahGXVJ9IADk6g5eP1u4ea50EXdeqHC_hUH4ELdTW4xeY0CDKHVN7kevCCr7rtXxGxEK6JCWMma3Yf5Sz43mokJdaZUAeNSsjFlIKGb2PpxqaF2Kod1udbnRXFm7b1YHLlrsbBfPDYqfdkyRXkUwEnqNP3CSH9_TA4e0sEqc_arfRRTHgEYH35FWOHdeVmkdk8yVIqAunx7arHUYvVj7Mo7UERO1LNI0fBnBbAL9PcnRlL25vbMsKMl_LF0YaAtgGkHtYLKn8_vQ1rCH_kGNw-SAJQpHZUg2cnh0PdKUUXcDSWTrBs-sie6Owek2M1XuKJaFVdvwoD2MiEnN6SKCH1tv6ZazgHOT-0rjLedCC-f7X0dPyf69NYSt63ZNMcyOhOAVFZwFzMYpBkxd7SpOums7yKJI2L0om_8-x1iHs5j6I76E0f3FP9FzJ6Y",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{$local}}/family/members",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "family",
+                "members"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get DSP Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{$live}}/family/get-dsp-details/2",
+              "host": [
+                "{{$live}}"
+              ],
+              "path": [
+                "family",
+                "get-dsp-details",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DSP List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{$live}}/family/dsp-list",
+              "host": [
+                "{{$live}}"
+              ],
+              "path": [
+                "family",
+                "dsp-list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Assigned DSPs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{$live}}/family/assigned-dsps",
+              "host": [
+                "{{$live}}"
+              ],
+              "path": [
+                "family",
+                "assigned-dsps"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Daily Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
               "raw": "{{$local}}/family/daily-logs",
               "host": [
                 "{{$local}}"
@@ -1100,17 +1291,122 @@
               "path": [
                 "family",
                 "daily-logs"
-              ],
-              "query": [
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notes",
+      "item": [
+        {
+          "name": "Create Notes",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
                 {
-                  "key": "per_page",
-                  "value": "15",
-                  "description": "Optional: pagination page size (default 15)",
-                  "disabled": true
+                  "key": "title",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "af435cbd-f3f3-440e-b956-8b697849b2c1"
+                },
+                {
+                  "key": "description",
+                  "value": "",
+                  "type": "text",
+                  "uuid": "291090a5-790d-4d0c-b112-749e6bf39f62"
                 }
               ]
             },
-            "description": "Family-admin-facing view of the daily logs DSPs have filed against them (Api\\FamilyController::dailyLogs). Requires the `family_admin` role — call this with a family_admin's bearer token, not a DSP's. Each entry includes `dsp_name` (who wrote it)."
+            "url": {
+              "raw": "{{$local}}/todo-notes",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "todo-notes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Notes",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{$local}}/todo-notes/1",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "todo-notes",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Note",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{$local}}/todo-notes",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "todo-notes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Individual Notes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{$local}}/todo-notes/1",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "todo-notes",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Notes",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{$local}}/todo-notes/1",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "todo-notes",
+                "1"
+              ]
+            }
           },
           "response": []
         }
@@ -1126,7 +1422,7 @@
           "formdata": [
             {
               "key": "email",
-              "value": "dsp@unitycarelink.com",
+              "value": "family@unitycarelink.com",
               "type": "text",
               "uuid": "64335c6d-3554-4cbc-899f-d56939e9c917"
             },
@@ -1139,9 +1435,9 @@
           ]
         },
         "url": {
-          "raw": "{{$live}}/login",
+          "raw": "{{$local}}/login",
           "host": [
-            "{{$live}}"
+            "{{$local}}"
           ],
           "path": [
             "login"
@@ -1201,6 +1497,12 @@
               "description": "family_admin,family_member,dsp,agency_admin,program_staff",
               "type": "text",
               "uuid": "252cfb08-162d-4f13-89fe-bcd43f518e34"
+            },
+            {
+              "key": "family_admin_id",
+              "value": "1",
+              "type": "text",
+              "uuid": "35563931-5551-4ca1-b54f-9e2d7a5bf312"
             }
           ]
         },
@@ -1297,84 +1599,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{$local}}/profile",
+          "raw": "{{$live}}/profile",
           "host": [
-            "{{$local}}"
+            "{{$live}}"
           ],
           "path": [
             "profile"
           ]
         }
-      },
-      "response": []
-    },
-    {
-      "name": "Update Profile",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Accept",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "formdata",
-          "formdata": [
-            {
-              "key": "first_name",
-              "value": "Jane",
-              "type": "text",
-              "description": "Optional"
-            },
-            {
-              "key": "last_name",
-              "value": "Doe",
-              "type": "text",
-              "description": "Optional"
-            },
-            {
-              "key": "email",
-              "value": "jane.doe@example.com",
-              "type": "text",
-              "description": "Optional"
-            },
-            {
-              "key": "phone",
-              "value": "123456789",
-              "type": "text",
-              "description": "Optional"
-            },
-            {
-              "key": "password",
-              "value": "newpassword123",
-              "type": "text",
-              "description": "Optional — omit to leave the password unchanged"
-            },
-            {
-              "key": "password_confirmation",
-              "value": "newpassword123",
-              "type": "text",
-              "description": "Required if password is set"
-            },
-            {
-              "key": "profile_photo",
-              "type": "file",
-              "src": [],
-              "description": "Optional: jpg/jpeg/png/webp, max 5MB"
-            }
-          ]
-        },
-        "url": {
-          "raw": "{{$local}}/update-profile",
-          "host": [
-            "{{$local}}"
-          ],
-          "path": [
-            "update-profile"
-          ]
-        },
-        "description": "Updates any subset of the authenticated user's first_name, last_name, email, phone, password, and profile_photo. All fields are optional — only send what you want to change."
       },
       "response": []
     },
@@ -1390,6 +1622,70 @@
           ],
           "path": [
             "activity-statuses"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Profile",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "first_name",
+              "value": "",
+              "type": "text",
+              "uuid": "1dcdfdc4-9c60-489e-871f-dc5474d8b21c"
+            },
+            {
+              "key": "last_name",
+              "value": "",
+              "type": "text",
+              "uuid": "21369bc5-930c-42f1-b861-967bbed643db"
+            },
+            {
+              "key": "email",
+              "value": "",
+              "type": "text",
+              "uuid": "27e2067c-3087-4996-9d43-496f6381c90f"
+            },
+            {
+              "key": "phone",
+              "value": "",
+              "type": "text",
+              "uuid": "5bffa90a-c86d-4130-a93c-2df2700b74ee"
+            },
+            {
+              "key": "password",
+              "value": "",
+              "type": "text",
+              "uuid": "c8ac4ba5-d9b6-4a4b-a34e-6e24301b8f10"
+            },
+            {
+              "key": "password_confirmation",
+              "value": "",
+              "type": "text",
+              "uuid": "8baf47fa-8ddc-44ba-b330-f1764b3324f7"
+            },
+            {
+              "key": "profile_photo",
+              "value": "",
+              "type": "text",
+              "uuid": "5dabffd6-e77a-4812-bfe4-e93e17b308d7"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{$live}}/update-profile",
+          "host": [
+            "{{$live}}"
+          ],
+          "path": [
+            "update-profile"
           ]
         }
       },

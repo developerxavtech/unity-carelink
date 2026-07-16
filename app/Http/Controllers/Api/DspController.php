@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\DspCertificationResource;
 use App\Http\Resources\DspClientResource;
+use App\Models\CalendarEvent;
 use App\Models\Conversation;
+use App\Models\DspCertification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +14,42 @@ use Illuminate\Support\Facades\Validator;
 
 class DspController extends BaseController
 {
+    /**
+     * Family admins (clients) currently involved in conversations with the
+     * given DSP, with individual profile details, status, and timing info.
+     * Shared by clientsList() and profile().
+     */
+    private function getAssignedClients(User $dsp)
+    {
+        $conversationIds = Conversation::forUser($dsp->id)->pluck('id');
+
+        $clientIds = User::whereHas('roles', function ($q) {
+            $q->where('name', 'family_admin');
+        })
+            ->whereHas('conversations', function ($q) use ($conversationIds) {
+                $q->whereIn('conversations.id', $conversationIds);
+            })
+            ->where('id', '!=', $dsp->id)
+            ->pluck('id');
+
+        return User::with([
+            'individualProfiles.moodChecks' => function ($q) {
+                $q->orderBy('check_date', 'desc')->limit(5);
+            },
+            'individualProfiles.careNotes' => function ($q) {
+                $q->orderBy('created_at', 'desc')->limit(1);
+            },
+            'conversations' => function ($q) use ($conversationIds) {
+                $q->whereIn('conversations.id', $conversationIds)
+                    ->with(['messages' => function ($mq) {
+                        $mq->orderBy('created_at', 'desc')->limit(1);
+                    }]);
+            },
+        ])
+            ->whereIn('id', $clientIds)
+            ->get();
+    }
+
     /**
      * 5. DSP's Clients List
      *
@@ -30,33 +69,7 @@ class DspController extends BaseController
                 return $this->sendError('Unauthorized. Only DSPs can access this endpoint.', [], 403);
             }
 
-            $conversationIds = Conversation::forUser($dsp->id)->pluck('id');
-
-            $clientIds = User::whereHas('roles', function ($q) {
-                $q->where('name', 'family_admin');
-            })
-                ->whereHas('conversations', function ($q) use ($conversationIds) {
-                    $q->whereIn('conversations.id', $conversationIds);
-                })
-                ->where('id', '!=', $dsp->id)
-                ->pluck('id');
-
-            $clients = User::with([
-                'individualProfiles.moodChecks' => function ($q) {
-                    $q->orderBy('check_date', 'desc')->limit(5);
-                },
-                'individualProfiles.careNotes' => function ($q) {
-                    $q->orderBy('created_at', 'desc')->limit(1);
-                },
-                'conversations' => function ($q) use ($conversationIds) {
-                    $q->whereIn('conversations.id', $conversationIds)
-                        ->with(['messages' => function ($mq) {
-                            $mq->orderBy('created_at', 'desc')->limit(1);
-                        }]);
-                },
-            ])
-                ->whereIn('id', $clientIds)
-                ->get();
+            $clients = $this->getAssignedClients($dsp);
 
             // Apply pagination
             $perPage = $request->get('per_page', 15);
@@ -159,6 +172,62 @@ class DspController extends BaseController
                 'search_query' => $search,
             ], 'Search results retrieved successfully.');
 
+        } catch (\Exception $e) {
+            return $this->sendError('Something went wrong.', ['error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * DSP Profile
+     *
+     * Profile screen data for the authenticated DSP: identity, this week's
+     * appointment stats, certifications, and assigned clients (same list as
+     * GET /api/dsp/clients).
+     *
+     * GET /api/dsp/profile
+     */
+    public function profile()
+    {
+        try {
+            /** @var User $dsp */
+            $dsp = Auth::user();
+
+            if (! $dsp->hasRole('dsp')) {
+                return $this->sendError('Unauthorized. Only DSPs can access this endpoint.', [], 403);
+            }
+
+            $weekStart = now()->startOfWeek();
+            $weekEnd = now()->endOfWeek();
+
+            $appointmentsThisWeek = CalendarEvent::forUser($dsp->id)
+                ->where('event_type', 'appointment')
+                ->whereBetween('start_datetime', [$weekStart, $weekEnd])
+                ->get();
+
+            $hours = $appointmentsThisWeek->sum(fn ($event) => $event->duration_in_minutes) / 60;
+
+            $clients = $this->getAssignedClients($dsp);
+
+            $certifications = DspCertification::where('user_id', $dsp->id)
+                ->orderBy('name')
+                ->get();
+
+            return $this->sendResponse([
+                'profile' => [
+                    'id' => $dsp->id,
+                    'name' => $dsp->full_name,
+                    'role' => $dsp->role,
+                    'profile_photo' => $dsp->profile_photo,
+                    'status' => $dsp->status,
+                    'clients_assigned_count' => $clients->count(),
+                ],
+                'this_week' => [
+                    'shifts_logged' => $appointmentsThisWeek->count(),
+                    'hours' => round($hours, 1),
+                ],
+                'certifications' => DspCertificationResource::collection($certifications),
+                'assigned_clients' => DspClientResource::collection($clients),
+            ], 'DSP profile retrieved successfully.');
         } catch (\Exception $e) {
             return $this->sendError('Something went wrong.', ['error' => $e->getMessage()], 500);
         }
