@@ -11,6 +11,7 @@ class CareNote extends Model
 
     protected $fillable = [
         'individual_profile_id',
+        'family_user_id',
         'dsp_user_id',
         'shift_date',
         'notes',
@@ -32,6 +33,16 @@ class CareNote extends Model
         return $this->belongsTo(IndividualProfile::class);
     }
 
+    /**
+     * The family admin this log was filed against (mobile API daily logs —
+     * see DailyLogController — attach directly to the family admin rather
+     * than an individual profile).
+     */
+    public function familyAdmin()
+    {
+        return $this->belongsTo(User::class, 'family_user_id');
+    }
+
     public function dsp()
     {
         return $this->belongsTo(User::class, 'dsp_user_id');
@@ -47,6 +58,11 @@ class CareNote extends Model
     public function scopeForIndividual($query, int $individualProfileId)
     {
         return $query->where('individual_profile_id', $individualProfileId);
+    }
+
+    public function scopeForFamilyAdmin($query, int $familyUserId)
+    {
+        return $query->where('family_user_id', $familyUserId);
     }
 
     public function scopeByDsp($query, int $dspUserId)

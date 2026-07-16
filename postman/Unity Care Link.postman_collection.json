@@ -878,9 +878,9 @@
               ],
               "query": [
                 {
-                  "key": "individual_id",
+                  "key": "family_id",
                   "value": "1",
-                  "description": "Optional: filter by individual profile id",
+                  "description": "Optional: filter by family admin's user id",
                   "disabled": true
                 },
                 {
@@ -921,10 +921,10 @@
               "mode": "formdata",
               "formdata": [
                 {
-                  "key": "individual_profile_id",
+                  "key": "user_id",
                   "value": "1",
                   "type": "text",
-                  "description": "Required: id of an individual profile this DSP can access"
+                  "description": "Required: user id of a family_admin assigned to this DSP (i.e. sharing a conversation with them) — see GET /dsp/clients for the list. The log is filed directly against this family admin (not an individual profile) and the family admin can view it via GET /family/daily-logs."
                 },
                 {
                   "key": "shift_date",
@@ -1079,6 +1079,38 @@
                 "1"
               ]
             }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Daily Logs (Family)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{$local}}/family/daily-logs",
+              "host": [
+                "{{$local}}"
+              ],
+              "path": [
+                "family",
+                "daily-logs"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15",
+                  "description": "Optional: pagination page size (default 15)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Family-admin-facing view of the daily logs DSPs have filed against them (Api\\FamilyController::dailyLogs). Requires the `family_admin` role — call this with a family_admin's bearer token, not a DSP's. Each entry includes `dsp_name` (who wrote it)."
           },
           "response": []
         }

@@ -38,6 +38,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('get-dsp-details/{id}', [FamilyController::class, 'getDspDetails']);
         Route::get('assigned-dsps', [FamilyController::class, 'assignedDsps']);
         Route::get('dsp-list', [FamilyController::class, 'dspList']);
+        Route::get('daily-logs', [FamilyController::class, 'dailyLogs']);
 
     });
 

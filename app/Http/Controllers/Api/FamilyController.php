@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\CareNoteResource;
+use App\Models\CareNote;
 use App\Models\IndividualProfile;
 use App\Models\User;
 use Auth;
@@ -17,13 +19,13 @@ class FamilyController extends BaseController
 
             // Family admins and members see their family's individuals
             if (! $user->hasRole('family_admin')) {
-                return $this->errorResponse('You are not family admin');
+                return $this->sendError('You are not family admin');
 
             }
 
-            $individuals = IndividualProfile::accessibleBy($user->id)
-                ->with('careNotes', 'moodChecks')
-                ->get();
+            // $individuals = IndividualProfile::accessibleBy($user->id)
+            //     ->with('careNotes', 'moodChecks')
+            //     ->get();
 
             // If family admin, also get their linked family members (users)
             if ($user->hasRole('family_admin')) {
@@ -37,11 +39,10 @@ class FamilyController extends BaseController
             }
 
             return $this->sendResponse('Family members', [
-                'individuals' => $individuals,
-                'family_users' => $familyUsers,
+                'family_users' => $familyUsers
             ]);
         } catch (\Exception $e) {
-            return $this->errorResponse('Error fetching family members', $e->getMessage());
+            return $this->sendError('Error fetching family members', $e->getMessage());
         }
     }
 
@@ -52,7 +53,7 @@ class FamilyController extends BaseController
 
             return $this->sendResponse('DSP Details', $dsp);
         } catch (\Exception $e) {
-            return $this->errorResponse('Error fetching DSP details', $e->getMessage());
+            return $this->sendError('Error fetching DSP details', $e->getMessage());
         }
     }
 
@@ -74,7 +75,7 @@ class FamilyController extends BaseController
 
             return $this->sendResponse('Assigned DSPs', $dsps);
         } catch (\Exception $e) {
-            return $this->errorResponse('Error fetching assigned DSPs', $e->getMessage());
+            return $this->sendError('Error fetching assigned DSPs', $e->getMessage());
         }
     }
 
@@ -85,7 +86,41 @@ class FamilyController extends BaseController
 
             return $this->sendResponse('DSP List', $dsps);
         } catch (\Exception $e) {
-            return $this->errorResponse('Error fetching DSP list', $e->getMessage());
+            return $this->sendError('Error fetching DSP list', $e->getMessage());
+        }
+    }
+
+    /**
+     * Daily logs DSPs have filed against this family admin.
+     *
+     * GET /api/family/daily-logs
+     */
+    public function dailyLogs(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            if (! $user->hasRole('family_admin')) {
+                return $this->sendError('You are not a family admin.', [], 403);
+            }
+
+            $logs = CareNote::where('family_user_id', $user->id)
+                ->with('dsp')
+                ->orderBy('shift_date', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->paginate($request->get('per_page', 15));
+
+            return $this->sendResponse([
+                'logs' => CareNoteResource::collection($logs->items()),
+                'pagination' => [
+                    'total' => $logs->total(),
+                    'per_page' => $logs->perPage(),
+                    'current_page' => $logs->currentPage(),
+                    'last_page' => $logs->lastPage(),
+                ],
+            ], 'Daily logs retrieved successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError('Error fetching daily logs', $e->getMessage());
         }
     }
 }

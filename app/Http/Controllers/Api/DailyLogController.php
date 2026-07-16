@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\CareNoteResource;
 use App\Models\CareNote;
-use App\Models\IndividualProfile;
+use App\Models\Conversation;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -30,10 +31,10 @@ class DailyLogController extends BaseController
             $this->authorizeDsp();
 
             $query = CareNote::where('dsp_user_id', Auth::id())
-                ->with('individualProfile');
+                ->with('familyAdmin');
 
-            if ($request->filled('individual_id')) {
-                $query->where('individual_profile_id', $request->individual_id);
+            if ($request->filled('family_id')) {
+                $query->where('family_user_id', $request->family_id);
             }
 
             if ($request->filled('start_date')) {
@@ -75,7 +76,7 @@ class DailyLogController extends BaseController
             $this->authorizeDsp();
 
             $validator = Validator::make($request->all(), [
-                'individual_profile_id' => 'required|integer|exists:individual_profiles,id',
+                'user_id' => 'required|integer|exists:users,id',
                 'shift_date' => 'nullable|date',
                 'notes' => 'required|string',
                 'mood' => 'nullable|string|in:great,good,okay,concern',
@@ -91,21 +92,38 @@ class DailyLogController extends BaseController
 
             $validated = $validator->validated();
 
-            $accessible = IndividualProfile::accessibleBy(Auth::id())
-                ->where('id', $validated['individual_profile_id'])
+            $familyAdmin = User::find($validated['user_id']);
+
+            if (! $familyAdmin->hasRole('family_admin')) {
+                return $this->sendError('user_id must belong to a family admin.', [], 422);
+            }
+
+            // The family admin must actually be assigned to this DSP (i.e. share
+            // a conversation with them) — the same "assignment" rule
+            // DspController::clientsList() and FamilyController::assignedDsps()
+            // already use. Without this, any DSP could log against any family
+            // admin just by knowing their user id.
+            $isAssigned = Conversation::forUser(Auth::id())
+                ->whereHas('participants', fn ($q) => $q->where('user_id', $familyAdmin->id))
                 ->exists();
 
-            if (! $accessible) {
-                return $this->sendError('You do not have access to this individual profile.', [], 403);
+            if (! $isAssigned) {
+                return $this->sendError('This family admin is not assigned to you.', [], 403);
             }
 
             $log = CareNote::create([
-                ...$validated,
+                'family_user_id' => $familyAdmin->id,
                 'dsp_user_id' => Auth::id(),
                 'shift_date' => $validated['shift_date'] ?? now()->toDateString(),
+                'notes' => $validated['notes'],
+                'mood' => $validated['mood'] ?? null,
+                'activities' => $validated['activities'] ?? null,
+                'meals' => $validated['meals'] ?? null,
+                'medications' => $validated['medications'] ?? null,
+                'incidents' => $validated['incidents'] ?? null,
             ]);
 
-            return $this->sendResponse(new CareNoteResource($log->load('individualProfile')), 'Daily log created successfully.', 201);
+            return $this->sendResponse(new CareNoteResource($log->load('familyAdmin')), 'Daily log created successfully.', 201);
         } catch (\Exception $e) {
             return $this->sendError('Daily log could not be created.', ['error' => $e->getMessage()], 500);
         }
@@ -122,7 +140,7 @@ class DailyLogController extends BaseController
             $this->authorizeDsp();
 
             $log = CareNote::where('dsp_user_id', Auth::id())
-                ->with('individualProfile')
+                ->with('familyAdmin')
                 ->findOrFail($id);
 
             return $this->sendResponse(new CareNoteResource($log), 'Daily log retrieved successfully.');
@@ -161,7 +179,7 @@ class DailyLogController extends BaseController
 
             $log->update($validator->validated());
 
-            return $this->sendResponse(new CareNoteResource($log->load('individualProfile')), 'Daily log updated successfully.');
+            return $this->sendResponse(new CareNoteResource($log->load('familyAdmin')), 'Daily log updated successfully.');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $this->sendError('Daily log not found.', [], 404);
         } catch (\Exception $e) {
