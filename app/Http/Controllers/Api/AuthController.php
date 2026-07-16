@@ -12,8 +12,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Mail;
 
 class AuthController extends BaseController
@@ -282,6 +284,48 @@ class AuthController extends BaseController
             }
 
             return $this->sendResponse(new ProfileResource($user), 'Profile retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Something went wrong.', ['error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Update Profile API
+     */
+    public function updateProfile(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            $validator = Validator::make($request->all(), [
+                'first_name' => 'sometimes|required|string|max:255',
+                'last_name' => 'sometimes|required|string|max:255',
+                'email' => ['sometimes', 'required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+                'phone' => 'sometimes|nullable|string|max:20',
+                'password' => 'sometimes|required|string|min:8|confirmed',
+                'profile_photo' => 'sometimes|image|mimes:jpg,jpeg,png,webp|max:5120',
+            ]);
+
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors()->toArray(), 422);
+            }
+
+            $validated = $validator->validated();
+
+            if (array_key_exists('password', $validated)) {
+                $validated['password'] = Hash::make($validated['password']);
+            }
+
+            if ($request->hasFile('profile_photo')) {
+                if ($user->profile_photo) {
+                    Storage::disk('public')->delete($user->profile_photo);
+                }
+                $validated['profile_photo'] = $request->file('profile_photo')->store('profile-photos', 'public');
+            }
+
+            $user->update($validated);
+
+            return $this->sendResponse(new ProfileResource($user->fresh()), 'Profile updated successfully.');
         } catch (Exception $e) {
             return $this->sendError('Something went wrong.', ['error' => $e->getMessage()], 500);
         }

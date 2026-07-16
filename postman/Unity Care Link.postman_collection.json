@@ -1309,6 +1309,76 @@
       "response": []
     },
     {
+      "name": "Update Profile",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "first_name",
+              "value": "Jane",
+              "type": "text",
+              "description": "Optional"
+            },
+            {
+              "key": "last_name",
+              "value": "Doe",
+              "type": "text",
+              "description": "Optional"
+            },
+            {
+              "key": "email",
+              "value": "jane.doe@example.com",
+              "type": "text",
+              "description": "Optional"
+            },
+            {
+              "key": "phone",
+              "value": "123456789",
+              "type": "text",
+              "description": "Optional"
+            },
+            {
+              "key": "password",
+              "value": "newpassword123",
+              "type": "text",
+              "description": "Optional — omit to leave the password unchanged"
+            },
+            {
+              "key": "password_confirmation",
+              "value": "newpassword123",
+              "type": "text",
+              "description": "Required if password is set"
+            },
+            {
+              "key": "profile_photo",
+              "type": "file",
+              "src": [],
+              "description": "Optional: jpg/jpeg/png/webp, max 5MB"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{$local}}/update-profile",
+          "host": [
+            "{{$local}}"
+          ],
+          "path": [
+            "update-profile"
+          ]
+        },
+        "description": "Updates any subset of the authenticated user's first_name, last_name, email, phone, password, and profile_photo. All fields are optional — only send what you want to change."
+      },
+      "response": []
+    },
+    {
       "name": "Activity Statuses",
       "request": {
         "method": "GET",
