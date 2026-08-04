@@ -232,4 +232,52 @@ class DspController extends BaseController
             return $this->sendError('Something went wrong.', ['error' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * Share the DSP's current location and online/available-for-rides
+     * status. The mobile app should call this periodically while the DSP is
+     * online so ride search (RideController::searchDsps) can find them.
+     *
+     * POST /api/dsp/location
+     */
+    public function updateLocation(Request $request)
+    {
+        try {
+            $dsp = Auth::user();
+
+            if (! $dsp->hasRole('dsp')) {
+                return $this->sendError('Unauthorized. Only DSPs can access this endpoint.', [], 403);
+            }
+
+            $validator = Validator::make($request->all(), [
+                'latitude' => 'required|numeric|between:-90,90',
+                'longitude' => 'required|numeric|between:-180,180',
+                'is_available' => 'sometimes|boolean',
+            ]);
+
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors()->toArray(), 422);
+            }
+
+            $validated = $validator->validated();
+
+            $profile = $dsp->dspProfile()->firstOrCreate(['user_id' => $dsp->id]);
+
+            $profile->update([
+                'latitude' => $validated['latitude'],
+                'longitude' => $validated['longitude'],
+                'location_updated_at' => now(),
+                'is_available' => $validated['is_available'] ?? $profile->is_available,
+            ]);
+
+            return $this->sendResponse([
+                'latitude' => (float) $profile->latitude,
+                'longitude' => (float) $profile->longitude,
+                'is_available' => $profile->is_available,
+                'location_updated_at' => $profile->location_updated_at->toIso8601String(),
+            ], 'Location updated successfully.');
+        } catch (\Exception $e) {
+            return $this->sendError('Location could not be updated.', ['error' => $e->getMessage()], 500);
+        }
+    }
 }

@@ -34,6 +34,7 @@ class User extends Authenticatable implements OAuthenticatable
         'status_message',
         'status_busy_until',
         'family_admin_id',
+        'fcm_token',
     ];
 
     /**

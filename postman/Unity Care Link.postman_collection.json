@@ -1690,6 +1690,373 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "Rides",
+      "item": [
+        {
+          "name": "Update DSP Location",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "latitude",
+                  "value": "37.7879",
+                  "type": "text"
+                },
+                {
+                  "key": "longitude",
+                  "value": "-122.4075",
+                  "type": "text"
+                },
+                {
+                  "key": "is_available",
+                  "value": "1",
+                  "type": "text",
+                  "description": "DSP goes online/available for ride requests"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/dsp/location",
+              "host": [ "{{$local}}" ],
+              "path": [ "dsp", "location" ]
+            },
+            "description": "Called by DSP required. The DSP's mobile app should call this periodically while online so ride search can find them (see config('rides.location_freshness_minutes'))."
+          },
+          "response": []
+        },
+        {
+          "name": "Register Device Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "fcm_token",
+                  "value": "",
+                  "type": "text",
+                  "description": "Firebase Cloud Messaging device token from the mobile app's Firebase SDK"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/device-token",
+              "host": [ "{{$local}}" ],
+              "path": [ "device-token" ]
+            },
+            "description": "Called by any authenticated user (family or DSP) on app launch/login so ride push notifications (App\\Services\\FirebasePushService) can reach their device."
+          },
+          "response": []
+        },
+        {
+          "name": "Search DSPs",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "pickup_latitude",
+                  "value": "37.7899",
+                  "type": "text"
+                },
+                {
+                  "key": "pickup_longitude",
+                  "value": "-122.4104",
+                  "type": "text"
+                },
+                {
+                  "key": "destination_address",
+                  "value": "Grand Hyatt San Francisco",
+                  "type": "text"
+                },
+                {
+                  "key": "destination_latitude",
+                  "value": "37.7885",
+                  "type": "text"
+                },
+                {
+                  "key": "destination_longitude",
+                  "value": "-122.4090",
+                  "type": "text"
+                },
+                {
+                  "key": "vehicle_type",
+                  "value": "minivan",
+                  "type": "text",
+                  "description": "minivan|full_size|suv"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/rides/search-dsps",
+              "host": [ "{{$local}}" ],
+              "path": [ "rides", "search-dsps" ]
+            },
+            "description": "Called by family_admin/family_member. Returns available DSPs sorted by distance to the pickup point, plus the trip fare (same for every DSP returned, since it's driven by pickup->destination distance, not the DSP's own distance)."
+          },
+          "response": []
+        },
+        {
+          "name": "Book Ride",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res && res.data && res.data.id) {",
+                  "    pm.collectionVariables.set('ride_id', res.data.id);",
+                  "    console.log('ride_id saved:', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "dsp_user_id",
+                  "value": "",
+                  "type": "text",
+                  "description": "Required: from the Search DSPs response"
+                },
+                {
+                  "key": "individual_profile_id",
+                  "value": "",
+                  "type": "text",
+                  "description": "Optional: which individual this ride is for"
+                },
+                {
+                  "key": "vehicle_type",
+                  "value": "minivan",
+                  "type": "text"
+                },
+                {
+                  "key": "pickup_address",
+                  "value": "5495 Arapahoe Ave, Boulder, CO 80303",
+                  "type": "text"
+                },
+                {
+                  "key": "pickup_latitude",
+                  "value": "37.7899",
+                  "type": "text"
+                },
+                {
+                  "key": "pickup_longitude",
+                  "value": "-122.4104",
+                  "type": "text"
+                },
+                {
+                  "key": "destination_address",
+                  "value": "Grand Hyatt San Francisco",
+                  "type": "text"
+                },
+                {
+                  "key": "destination_latitude",
+                  "value": "37.7885",
+                  "type": "text"
+                },
+                {
+                  "key": "destination_longitude",
+                  "value": "-122.4090",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/rides",
+              "host": [ "{{$local}}" ],
+              "path": [ "rides" ]
+            },
+            "description": "Called by family_admin/family_member to book a specific DSP from the Search DSPs results. Fare/distance are recomputed server-side. Sends an FCM push + broadcasts `ride.requested` on the DSP's `private-user.{dsp_user_id}` channel. Saves the new ride's id to `ride_id`."
+          },
+          "response": []
+        },
+        {
+          "name": "Respond to Ride (DSP)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "decision",
+                  "value": "accept",
+                  "type": "text",
+                  "description": "accept|reject"
+                },
+                {
+                  "key": "reason",
+                  "value": "",
+                  "type": "text",
+                  "description": "Optional, used when decision=reject"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/rides/{{ride_id}}/respond",
+              "host": [ "{{$local}}" ],
+              "path": [ "rides", "{{ride_id}}", "respond" ]
+            },
+            "description": "Called by the DSP the ride was booked with. On accept/reject, sends an FCM push + broadcasts `ride.responded` on the family's `private-user.{family_user_id}` channel — if rejected, the family can try booking a different DSP."
+          },
+          "response": []
+        },
+        {
+          "name": "Start Ride (DSP)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{$local}}/rides/{{ride_id}}/start",
+              "host": [ "{{$local}}" ],
+              "path": [ "rides", "{{ride_id}}", "start" ]
+            },
+            "description": "Called by the DSP once the ride is accepted and underway. Broadcasts `ride.status.changed` on `private-ride.{{ride_id}}`."
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Ride (DSP)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{$local}}/rides/{{ride_id}}/complete",
+              "host": [ "{{$local}}" ],
+              "path": [ "rides", "{{ride_id}}", "complete" ]
+            },
+            "description": "Called by the DSP to finish an in-progress ride, closing out the ride history record."
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Ride",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{$local}}/rides/{{ride_id}}/cancel",
+              "host": [ "{{$local}}" ],
+              "path": [ "rides", "{{ride_id}}", "cancel" ]
+            },
+            "description": "Called by either the family admin or the DSP, only while the ride is still pending or accepted (not once in progress). Notifies the other party."
+          },
+          "response": []
+        },
+        {
+          "name": "List Rides",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{$local}}/rides",
+              "host": [ "{{$local}}" ],
+              "path": [ "rides" ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "completed",
+                  "description": "Optional: pending|accepted|rejected|cancelled|in_progress|completed",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Ride history for the authenticated user — family admins/members see rides they booked, DSPs see rides booked with them."
+          },
+          "response": []
+        },
+        {
+          "name": "Show Ride",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{$local}}/rides/{{ride_id}}",
+              "host": [ "{{$local}}" ],
+              "path": [ "rides", "{{ride_id}}" ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Broadcasting Auth (personal channel)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "socket_id",
+                  "value": "",
+                  "type": "text",
+                  "description": "Socket ID from the connected Pusher JS/mobile SDK"
+                },
+                {
+                  "key": "channel_name",
+                  "value": "private-user.{{user_id}}",
+                  "type": "text",
+                  "description": "Set {{user_id}} to your own user id — authorizes ride.requested / ride.responded events"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/broadcasting/auth",
+              "host": [ "{{$local}}" ],
+              "path": [ "broadcasting", "auth" ]
+            },
+            "description": "Authorizes subscribing to your own private-user.{id} channel, only valid for your own user id."
+          },
+          "response": []
+        },
+        {
+          "name": "Broadcasting Auth (ride channel)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "socket_id",
+                  "value": "",
+                  "type": "text",
+                  "description": "Socket ID from the connected Pusher JS/mobile SDK"
+                },
+                {
+                  "key": "channel_name",
+                  "value": "private-ride.{{ride_id}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{$local}}/broadcasting/auth",
+              "host": [ "{{$local}}" ],
+              "path": [ "broadcasting", "auth" ]
+            },
+            "description": "Authorizes subscribing to a ride's private-ride.{id} channel — only the ride's family admin or DSP may join. Authorizes ride.status.changed events (start/complete/cancel)."
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "auth": {
@@ -1745,6 +2112,14 @@
     },
     {
       "key": "dsp2_token",
+      "value": ""
+    },
+    {
+      "key": "ride_id",
+      "value": ""
+    },
+    {
+      "key": "user_id",
       "value": ""
     }
   ]

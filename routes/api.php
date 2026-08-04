@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\DailyLogController;
 use App\Http\Controllers\Api\DspCertificationController;
 use App\Http\Controllers\Api\DspController;
 use App\Http\Controllers\Api\FamilyController;
+use App\Http\Controllers\Api\RideController;
 use App\Http\Controllers\Api\StatusController;
 use App\Http\Controllers\Api\VoiceCornerController;
 use App\Http\Controllers\Api\TodoNoteController;
@@ -24,6 +25,7 @@ Route::controller(AuthController::class)->group(function () {
 Route::middleware('auth:api')->group(function () {
     Route::get('profile', [AuthController::class, 'getProfile']);
     Route::post('update-profile', [AuthController::class, 'updateProfile']);
+    Route::post('device-token', [AuthController::class, 'updateDeviceToken']);
 });
 Route::get('activity-statuses', [StatusController::class, 'getActivityStatuses']);
 Route::middleware('auth:api')->group(function () {
@@ -34,6 +36,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('clients', [DspController::class, 'clientsList'])->name('clients.index');
         Route::get('clients/search', [DspController::class, 'searchClients'])->name('clients.search');
         Route::get('profile', [DspController::class, 'profile'])->name('profile');
+        Route::post('location', [DspController::class, 'updateLocation'])->name('location');
 
         Route::apiResource('daily-logs', DailyLogController::class);
         Route::apiResource('certifications', DspCertificationController::class);
@@ -70,5 +73,20 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/', [VoiceCornerController::class, 'index'])->name('index');
         Route::post('/', [VoiceCornerController::class, 'store'])->name('store');
         Route::post('/{post}/reactions', [VoiceCornerController::class, 'react'])->name('reactions.react');
+    });
+
+    // Rides - family books a specific DSP, who accepts/rejects via push
+    // notification (App\Services\FirebasePushService); real-time status
+    // updates via Pusher private channels "user.{id}" (request/response)
+    // and "ride.{id}" (start/complete/cancel).
+    Route::prefix('rides')->name('api.rides.')->group(function () {
+        Route::get('/', [RideController::class, 'index'])->name('index');
+        Route::post('search-dsps', [RideController::class, 'searchDsps'])->name('search-dsps');
+        Route::post('/', [RideController::class, 'store'])->name('store');
+        Route::get('/{ride}', [RideController::class, 'show'])->name('show');
+        Route::post('/{ride}/respond', [RideController::class, 'respond'])->name('respond');
+        Route::post('/{ride}/start', [RideController::class, 'start'])->name('start');
+        Route::post('/{ride}/complete', [RideController::class, 'complete'])->name('complete');
+        Route::post('/{ride}/cancel', [RideController::class, 'cancel'])->name('cancel');
     });
 });

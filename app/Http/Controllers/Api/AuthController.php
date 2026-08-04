@@ -330,4 +330,28 @@ class AuthController extends BaseController
             return $this->sendError('Something went wrong.', ['error' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * Register/update the authenticated user's push notification device
+     * token (see App\Services\FirebasePushService). Called by the mobile
+     * app on launch/login and whenever the OS rotates the token.
+     */
+    public function updateDeviceToken(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'fcm_token' => 'required|string|max:255',
+            ]);
+
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors()->toArray(), 422);
+            }
+
+            Auth::user()->update(['fcm_token' => $request->fcm_token]);
+
+            return $this->sendResponse([], 'Device token updated successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Something went wrong.', ['error' => $e->getMessage()], 500);
+        }
+    }
 }
