@@ -34,6 +34,29 @@ class RideController extends BaseController
     }
 
     /**
+     * List the vehicle types available for booking, with their fare rates.
+     *
+     * GET /api/rides/vehicle-types
+     */
+    public function vehicleTypes()
+    {
+        try {
+            $types = collect(config('rides.vehicle_types'))
+                ->map(fn ($rates, $key) => [
+                    'key' => $key,
+                    'label' => $rates['label'],
+                    'base_fare' => $rates['base_fare'],
+                    'per_mile' => $rates['per_mile'],
+                ])
+                ->values();
+
+            return $this->sendResponse($types, 'Vehicle types retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('Vehicle types could not be retrieved.', ['error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
      * Find available DSPs near a pickup point, with fare/ETA, for a given
      * destination and vehicle type. Fare is the same across all DSPs
      * returned (it's driven by the pickup->destination trip distance, not

@@ -81,6 +81,7 @@ Route::middleware('auth:api')->group(function () {
     // and "ride.{id}" (start/complete/cancel).
     Route::prefix('rides')->name('api.rides.')->group(function () {
         Route::get('/', [RideController::class, 'index'])->name('index');
+        Route::get('vehicle-types', [RideController::class, 'vehicleTypes'])->name('vehicle-types');
         Route::post('search-dsps', [RideController::class, 'searchDsps'])->name('search-dsps');
         Route::post('/', [RideController::class, 'store'])->name('store');
         Route::get('/{ride}', [RideController::class, 'show'])->name('show');

@@ -1755,6 +1755,20 @@
           "response": []
         },
         {
+          "name": "List Vehicle Types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{$local}}/rides/vehicle-types",
+              "host": [ "{{$local}}" ],
+              "path": [ "rides", "vehicle-types" ]
+            },
+            "description": "Returns the bookable vehicle types (minivan, full_size, suv) with their label and base_fare/per_mile rates, from config/rides.php. Use this to populate the \"Select Vehicle\" screen."
+          },
+          "response": []
+        },
+        {
           "name": "Search DSPs",
           "request": {
             "method": "POST",
