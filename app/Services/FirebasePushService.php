@@ -37,10 +37,13 @@ class FirebasePushService
 
     public function send(string $deviceToken, string $title, string $body, array $data = []): bool
     {
-        Log::info('data', $data);
-        Log::info('deviceToken', $deviceToken);
-        Log::info('title', $title);
-        Log::info('body', $body);
+        Log::info('FirebasePushService: sending push', [
+            'data' => $data,
+            'deviceToken' => $deviceToken,
+            'title' => $title,
+            'body' => $body,
+        ]);
+
         $projectId = config('services.firebase.project_id');
 
         if (! $projectId) {
