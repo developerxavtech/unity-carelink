@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\DspLocationUpdated;
 use App\Http\Resources\DspCertificationResource;
 use App\Http\Resources\DspClientResource;
 use App\Models\CalendarEvent;
@@ -269,6 +270,8 @@ class DspController extends BaseController
                 'location_updated_at' => now(),
                 'is_available' => $validated['is_available'] ?? $profile->is_available,
             ]);
+
+            event(new DspLocationUpdated($dsp, $profile));
 
             return $this->sendResponse([
                 'latitude' => (float) $profile->latitude,
