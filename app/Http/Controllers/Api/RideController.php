@@ -186,14 +186,16 @@ class RideController extends BaseController
 
             event(new RideRequested($ride));
 
+            $ride->load(['familyAdmin', 'dsp']);
+
             $this->push->sendToUser(
                 $dsp,
                 'New Ride Request',
                 'A family has requested a ride to '.$ride->destination_address,
-                $ride->toArray(),
+                ['type' => 'ride.requested', 'ride' => json_encode($this->formatRide($ride))]
             );
 
-            return $this->sendResponse($this->formatRide($ride->load(['familyAdmin', 'dsp'])), 'Ride requested successfully.', 201);
+            return $this->sendResponse($this->formatRide($ride), 'Ride requested successfully.', 201);
         } catch (Exception $e) {
             return $this->sendError('Ride could not be requested.', ['error' => $e->getMessage()], 500);
         }
@@ -230,13 +232,15 @@ class RideController extends BaseController
 
             event(new RideResponded($ride));
 
+            $ride->load(['familyAdmin', 'dsp']);
+
             $this->push->sendToUser(
                 $ride->familyAdmin,
                 $accepted ? 'Ride Accepted' : 'Ride Declined',
                 $accepted
                     ? 'Your DSP accepted the ride request.'
                     : 'Your DSP declined the ride request. Please try booking another DSP.',
-                $ride->toArray()
+                ['type' => 'ride.responded', 'ride' => json_encode($this->formatRide($ride))]
             );
 
             return $this->sendResponse($this->formatRide($ride->load(['familyAdmin', 'dsp'])), 'Response recorded successfully.');
@@ -325,7 +329,7 @@ class RideController extends BaseController
                 $otherParty,
                 'Ride Cancelled',
                 'The ride has been cancelled.',
-                $ride->toArray()
+                ['ride_id' => $ride->id, 'type' => 'ride.cancelled', 'status' => $ride->status]
             );
 
             return $this->sendResponse($this->formatRide($ride->load(['familyAdmin', 'dsp'])), 'Ride cancelled successfully.');

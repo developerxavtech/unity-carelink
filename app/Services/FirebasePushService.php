@@ -67,8 +67,7 @@ class FirebasePushService
                             'title' => $title,
                             'body' => $body,
                         ],
-                        // FCM data payloads must be flat string => string maps.
-                        'data' => array_map('strval', $data),
+                        'data' => $this->flattenData($data),
                     ],
                 ]);
 
@@ -85,6 +84,31 @@ class FirebasePushService
 
             return false;
         }
+    }
+
+    /**
+     * FCM data payloads must be a flat string => string map — nested values
+     * (e.g. a full ride/model array with relations) aren't allowed. Rather
+     * than dropping them or letting them throw and kill the entire
+     * notification, JSON-encode array values into a single string field —
+     * callers that want to send a whole object (e.g. a formatted ride) can
+     * do so, and the mobile app just JSON.parse()s that field back out.
+     */
+    private function flattenData(array $data): array
+    {
+        $flat = [];
+
+        foreach ($data as $key => $value) {
+            if (is_scalar($value) || $value === null) {
+                $flat[$key] = (string) $value;
+            } elseif (is_array($value)) {
+                $flat[$key] = json_encode($value);
+            } else {
+                Log::warning('FirebasePushService: dropped unencodable data field from push payload.', ['key' => $key, 'type' => get_debug_type($value)]);
+            }
+        }
+
+        return $flat;
     }
 
     /**
