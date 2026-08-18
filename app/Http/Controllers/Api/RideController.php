@@ -269,7 +269,16 @@ class RideController extends BaseController
 
             event(new RideStatusChanged($ride));
 
-            return $this->sendResponse($this->formatRide($ride->load(['familyAdmin', 'dsp'])), 'Ride started successfully.');
+            $ride->load(['familyAdmin', 'dsp']);
+
+            $this->push->sendToUser(
+                $ride->familyAdmin,
+                'Ride Started',
+                'Your DSP has started the ride.',
+                ['type' => 'ride.started', 'ride' => json_encode($this->formatRide($ride))]
+            );
+
+            return $this->sendResponse($this->formatRide($ride), 'Ride started successfully.');
         } catch (Exception $e) {
             return $this->sendError('Ride could not be started.', ['error' => $e->getMessage()], 500);
         }
@@ -295,7 +304,16 @@ class RideController extends BaseController
 
             event(new RideStatusChanged($ride));
 
-            return $this->sendResponse($this->formatRide($ride->load(['familyAdmin', 'dsp'])), 'Ride completed successfully.');
+            $ride->load(['familyAdmin', 'dsp']);
+
+            $this->push->sendToUser(
+                $ride->familyAdmin,
+                'Ride Completed',
+                'Your ride has been completed.',
+                ['type' => 'ride.completed', 'ride' => json_encode($this->formatRide($ride))]
+            );
+
+            return $this->sendResponse($this->formatRide($ride), 'Ride completed successfully.');
         } catch (Exception $e) {
             return $this->sendError('Ride could not be completed.', ['error' => $e->getMessage()], 500);
         }
@@ -323,13 +341,15 @@ class RideController extends BaseController
 
             event(new RideStatusChanged($ride));
 
+            $ride->load(['familyAdmin', 'dsp']);
+
             $otherParty = $userId === $ride->family_user_id ? $ride->dsp : $ride->familyAdmin;
 
             $this->push->sendToUser(
                 $otherParty,
                 'Ride Cancelled',
                 'The ride has been cancelled.',
-                ['ride_id' => $ride->id, 'type' => 'ride.cancelled', 'status' => $ride->status]
+                ['type' => 'ride.cancelled', 'ride' => json_encode($this->formatRide($ride))]
             );
 
             return $this->sendResponse($this->formatRide($ride->load(['familyAdmin', 'dsp'])), 'Ride cancelled successfully.');
