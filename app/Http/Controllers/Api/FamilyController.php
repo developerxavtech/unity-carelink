@@ -39,7 +39,7 @@ class FamilyController extends BaseController
             }
 
             return $this->sendResponse('Family members', [
-                'family_users' => $familyUsers
+                'family_users' => $familyUsers,
             ]);
         } catch (\Exception $e) {
             return $this->sendError('Error fetching family members', $e->getMessage());
@@ -82,7 +82,9 @@ class FamilyController extends BaseController
     public function dspList(Request $request)
     {
         try {
-            $dsps = User::role('dsp')->with('dspProfile')->get();
+            $dsps = User::role('dsp')
+                ->with('dspProfile')
+                ->get();
 
             return $this->sendResponse('DSP List', $dsps);
         } catch (\Exception $e) {
