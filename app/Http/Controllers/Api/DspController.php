@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Events\DspLocationUpdated;
 use App\Http\Resources\DspCertificationResource;
 use App\Http\Resources\DspClientResource;
 use App\Models\CalendarEvent;
@@ -12,6 +11,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Pusher\Pusher;
+
 
 class DspController extends BaseController
 {
@@ -271,7 +272,20 @@ class DspController extends BaseController
                 'is_available' => $validated['is_available'] ?? $profile->is_available,
             ]);
 
-            event(new DspLocationUpdated($dsp, $profile));
+            $pusher = new Pusher(
+                config('broadcasting.connections.pusher.key'),
+                config('broadcasting.connections.pusher.secret'),
+                config('broadcasting.connections.pusher.app_id'),
+                [
+                    'cluster' => config('broadcasting.connections.pusher.options.cluster'),
+                    'useTLS' => true,
+                ]
+            );
+
+            $pusher->trigger('dsp.'.$dsp->id, 'location.updated', [
+                'latitude' =>  (float) $profile->latitude,
+                'longitude' => (float) $profile->longitude
+            ]);
 
             return $this->sendResponse([
                 'latitude' => (float) $profile->latitude,
