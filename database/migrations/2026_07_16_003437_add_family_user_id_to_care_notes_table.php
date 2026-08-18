@@ -25,7 +25,9 @@ return new class extends Migration
         // column can no longer be required. Raw SQL avoids needing
         // doctrine/dbal, which this project doesn't have installed, just to
         // call Blueprint::change().
-        DB::statement('ALTER TABLE care_notes MODIFY individual_profile_id BIGINT UNSIGNED NULL');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('ALTER TABLE care_notes MODIFY individual_profile_id BIGINT UNSIGNED NULL');
+        }
     }
 
     /**
@@ -38,6 +40,8 @@ return new class extends Migration
             $table->dropColumn('family_user_id');
         });
 
-        DB::statement('ALTER TABLE care_notes MODIFY individual_profile_id BIGINT UNSIGNED NOT NULL');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('ALTER TABLE care_notes MODIFY individual_profile_id BIGINT UNSIGNED NOT NULL');
+        }
     }
 };
