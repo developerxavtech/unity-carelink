@@ -236,7 +236,7 @@ class RideController extends BaseController
                 $accepted
                     ? 'Your DSP accepted the ride request.'
                     : 'Your DSP declined the ride request. Please try booking another DSP.',
-                ['ride_id' => $ride->id, 'type' => 'ride.responded']
+                $ride->toArray()
             );
 
             return $this->sendResponse($this->formatRide($ride->load(['familyAdmin', 'dsp'])), 'Response recorded successfully.');
@@ -325,7 +325,7 @@ class RideController extends BaseController
                 $otherParty,
                 'Ride Cancelled',
                 'The ride has been cancelled.',
-                ['ride_id' => $ride->id, 'type' => 'ride.cancelled']
+                $ride->toArray()
             );
 
             return $this->sendResponse($this->formatRide($ride->load(['familyAdmin', 'dsp'])), 'Ride cancelled successfully.');
