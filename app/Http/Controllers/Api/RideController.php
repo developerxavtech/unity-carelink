@@ -190,7 +190,7 @@ class RideController extends BaseController
                 $dsp,
                 'New Ride Request',
                 'A family has requested a ride to '.$ride->destination_address,
-                ['ride_id' => $ride->id, 'type' => 'ride.requested']
+                $ride->toArray(),
             );
 
             return $this->sendResponse($this->formatRide($ride->load(['familyAdmin', 'dsp'])), 'Ride requested successfully.', 201);
