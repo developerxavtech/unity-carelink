@@ -428,6 +428,7 @@ class RideController extends BaseController
             'family' => [
                 'id' => $ride->familyAdmin->id,
                 'name' => trim($ride->familyAdmin->first_name.' '.$ride->familyAdmin->last_name),
+                  'phone' => $ride->familyAdmin->phone
             ],
             'dsp' => [
                 'id' => $ride->dsp->id,
