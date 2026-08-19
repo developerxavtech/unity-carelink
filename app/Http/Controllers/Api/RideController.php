@@ -432,6 +432,7 @@ class RideController extends BaseController
             'dsp' => [
                 'id' => $ride->dsp->id,
                 'name' => trim($ride->dsp->first_name.' '.$ride->dsp->last_name),
+                'phone' => $ride->dsp->phone
             ],
             'individual_profile_id' => $ride->individual_profile_id,
             'pickup_address' => $ride->pickup_address,
